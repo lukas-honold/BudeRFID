@@ -21,6 +21,7 @@ public:
                     to_blink--;
                     blink_countdown.reset();
                     tgl(!current_state);
+                    current_state = !current_state;
                 }
                 if(to_blink<=0)
                     is_blinking = false; //switch the blinking off when all blinks are gone
