@@ -1,3 +1,6 @@
+
+#define led_pin 7
+
 class CardReader {
 public:
     CardReader(int i_cs, int i_reset, int i_framerate) : rfid_scanner(i_cs, i_reset), m_timer(i_framerate) {

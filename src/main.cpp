@@ -29,7 +29,6 @@
 #include "KeypadManager.h"
 
 #define relay_pin A3
-#define led_pin 7
 #define chip_select_rfid 5
 #define reset_rfid 4
 #define chip_select_sd 6
