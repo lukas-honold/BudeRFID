@@ -41,7 +41,7 @@ class Hardware
 public:
     Hardware(int countdown) : dataManager(chip_select_sd), keypadManager(10),
                               cardReader(chip_select_rfid, reset_rfid, 4), displayManager(0x27, 20, 4, 5),
-                              ct(countdown), ledManager(led_pin, 10),powerManager(relay_pin){};
+                              ct(countdown), ledManager(led_pin, 10), powerManager(relay_pin){};
     DataManager dataManager;
     KeypadManager keypadManager;
     CardReader cardReader;
@@ -76,43 +76,47 @@ public:
 
     void run()
     {
-        while (hardware.ct.alive()){
+        hardware.ledManager.blink(5, 0.05);
+        while (hardware.ct.alive())
+        {
             update();
             switch (current_state)
             {
-                case States::WARTEN:
-                    // Brüßungstext
-                    hardware.displayManager.set_new_text("Was machen Sachen?");
+            case States::WARTEN:
+                // Brüßungstext
+                hardware.displayManager.set_new_text("Was machen Sachen?");
 
-                    // Karte auslesen und LED an- bzw. ausschalten
-                    if (hardware.cardReader.is_card_present())
+                // Karte auslesen und LED an- bzw. ausschalten
+                if (hardware.cardReader.is_card_present())
+                {
+                    hardware.ledManager.toggle_permanent(true);
+                }
+                else
+                {
+                    hardware.ledManager.toggle_permanent(false);
+                }
+
+                // Zustand setzen
+                current_state = States::ID_GELESEN;
+                // Testkommentar
+                break;
+
+            case States::ID_GELESEN:
+                if (hardware.keypadManager.is_pressed())
+                {
+                    if (hardware.keypadManager.get_key() == '*')
                     {
-                        hardware.ledManager.toggle_permanent(true);
+                        hardware.displayManager.set_new_text(String(hardware.keypadManager.get_key()));
+                        current_state = States::ID_AUSGEGEBEN;
                     }
-                    else
-                    {
-                        hardware.ledManager.toggle_permanent(false);
-                    }
-
-                    // Zustand setzen
-                    current_state = States::ID_GELESEN;
-                    // Testkommentar
-                    break;
-
-                case States::ID_GELESEN:
-                    if (hardware.keypadManager.is_pressed()){
-                        if(hardware.keypadManager.get_key() == '*'){
-                            hardware.displayManager.set_new_text(String(hardware.keypadManager.get_key()));
-                            current_state = States::ID_AUSGEGEBEN;
-                        }
-                    }
-                    break;
-                case States::ABGEBUCHT:
-                    break;
-                case States::AUFLADEN:
-                    break;
-                case States::ID_AUSGEGEBEN:
-                    break;
+                }
+                break;
+            case States::ABGEBUCHT:
+                break;
+            case States::AUFLADEN:
+                break;
+            case States::ID_AUSGEGEBEN:
+                break;
             }
         }
         hardware.powerManager.switch_off();
