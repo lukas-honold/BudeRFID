@@ -57,6 +57,7 @@ public:
     enum class States
     {
         WARTEN,
+        CHIP_AUFLEGEN,
         ID_GELESEN,
         ABGEBUCHT,
         AUFLADEN,
@@ -82,27 +83,32 @@ public:
             update();
             switch (current_state)
             {
-            case States::WARTEN:
+
+            case States::CHIP_AUFLEGEN:
                 // Brüßungstext
                 hardware.displayManager.set_new_text("Chip auflegen");
+                current_state = States::WARTEN;
+                break;
+
+            case States::WARTEN:
 
                 // Karte auslesen und LED an- bzw. ausschalten
                 if (hardware.cardReader.is_card_present())
                 {
                     hardware.ledManager.toggle_permanent(true);
+                    hardware.displayManager.set_new_text(hardware.cardReader.get_id());
                     current_state = States::ID_GELESEN;
-                }
-                else
-                {
-                    hardware.ledManager.toggle_permanent(false);
                 }
 
                 // Testkommentar
                 break;
 
             case States::ID_GELESEN:
+                hardware.ledManager.toggle_permanent(hardware.cardReader.is_card_present());
+
                 if (hardware.keypadManager.is_pressed())
                 {
+                    hardware.ct.reset();
                     hardware.displayManager.set_new_text(String(hardware.keypadManager.get_key()));
                     if (hardware.keypadManager.get_key() == '*')
                     {
@@ -123,7 +129,7 @@ public:
     };
 
 private:
-    States current_state = States::WARTEN;
+    States current_state = States::CHIP_AUFLEGEN;
     Hardware hardware;
 };
 
