@@ -23,8 +23,10 @@ public:
                     tgl(!current_state);
                 }
                 if(to_blink<=0)
+                {
                     tgl(false);
                     is_blinking = false; //switch the blinking off when all blinks are gone
+                }
             }
         }
     };
