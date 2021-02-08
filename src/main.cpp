@@ -35,11 +35,13 @@
 #define chip_select_sd 6
 
 
-class Hardware{
+
+
+class Hardware {
 public:
-    Hardware(int countdown): dataManager(chip_select_sd), keypadManager(10),
-                             cardReader(chip_select_rfid, reset_rfid, 4), displayManager(0x27, 20, 4, 5),
-                             ct(countdown){};
+    Hardware(int countdown) : dataManager(chip_select_sd), keypadManager(10),
+                              cardReader(chip_select_rfid, reset_rfid, 4), displayManager(0x27, 20, 4, 5),
+                              ct(countdown) {};
     DataManager dataManager;
     KeypadManager keypadManager;
     CardReader cardReader;
@@ -47,56 +49,37 @@ public:
     Countdown ct;
 };
 
-class StateMaschine;
-
-
-class State {
-public:
-    State(StateMaschine *stm,Hardware& hrdw):m_hardware(hrdw),m_stm(stm) {
-
-    }
-
-    virtual void update() = 0;
-
-    StateMaschine* m_stm;
-    Hardware& m_hardware;
-};
-
-
-
 class StateMaschine {
 public:
-    StateMaschine(int countdown) : hardware(countdown) {
-        hardware.dataManager.import_data();
+
+
+    enum class States {
+        Warten,ID_gelesen
     };
 
+    StateMaschine(int x) : hardware(x) {};
+
+
     void update() {
+        hardware.cardReader.update();
         hardware.keypadManager.update();
         hardware.displayManager.update();
-        hardware.cardReader.update();
-    }
+    };
 
-    void run() {
-        while (hardware.ct.alive())
-        {
-            update();
-            running_state->update();
+    void run(){
+        update();
+        switch (current_state) {
+            case States::Warten:
+                break;
+            case States::ID_gelesen:
+                break;
         }
-    }
-
-
-
-    void set_next_state(State* next_state){
-        running_state = next_state;
-    }
+    };
 
 private:
+    States current_state=States::Warten;
     Hardware hardware;
-    State* running_state;
 };
-
-
-
 
 void setup() {
     Serial.begin(9600);
