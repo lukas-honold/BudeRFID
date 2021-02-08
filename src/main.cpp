@@ -47,14 +47,7 @@ public:
     Countdown ct;
 };
 
-
-class State;
-class StateMaschine{
-public:
-    void set_next_state(State*);
-};
-class TestState;
-class Test2State;
+class StateMaschine;
 
 
 class State {
@@ -67,19 +60,6 @@ public:
 
     StateMaschine* m_stm;
     Hardware& m_hardware;
-};
-
-
-class TestState : private State{
-public:
-    TestState(StateMaschine*stm,Hardware& hrdw):State(stm,hrdw){
-
-    };
-
-    void update(){
-        m_stm->set_next_state(m_stm->test2);
-    }
-
 };
 
 
@@ -110,15 +90,10 @@ public:
         running_state = next_state;
     }
 
-
 private:
     Hardware hardware;
     State* running_state;
 };
-
-
-
-
 
 
 
