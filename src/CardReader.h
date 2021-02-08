@@ -1,4 +1,4 @@
-
+#pragma once
 #define led_pin 7
 
 class CardReader {

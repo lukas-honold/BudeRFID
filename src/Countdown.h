@@ -1,3 +1,5 @@
+#pragma once
+
 class Countdown {
 public:
     Countdown(float seconds) {

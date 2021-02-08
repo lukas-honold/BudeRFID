@@ -1,3 +1,5 @@
+#pragma once
+
 const byte ROWS = 4;
 const byte COLS = 4;
 char keys[ROWS][COLS] = {{'1', '2', '3', 'A'},
