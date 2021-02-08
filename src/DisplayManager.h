@@ -12,13 +12,19 @@ class DisplayManager {
 
     void set_new_text(String to_print) {
       next_input = to_print;
+      changes_made = true;
     };
 
     void update() {
       if (m_timer.update()) {
-        test += 1;
-        lcd.setCursor(0, 0);
-        lcd.print(next_input);
+          if (changes_made){
+              changes_made = false;
+              lcd.clear();
+              lcd.setCursor(0, 0);
+              lcd.print(next_input);
+
+          }
+
       }
     };
 
@@ -27,5 +33,5 @@ class DisplayManager {
     String next_input;
     LiquidCrystal_I2C lcd;  // set the LCD address to 0x27 for a 16 chars and 2 line display
     float frametime = 0.f;
-    int test = 0;
+    bool changes_made = false;
 };
