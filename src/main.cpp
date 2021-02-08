@@ -57,7 +57,7 @@ public:
         Warten,ID_gelesen
     };
 
-    StateMaschine(int x) : hardware(x) {};
+    StateMaschine(int countdown_init) : hardware(countdown_init) {};
 
 
     void update() {
