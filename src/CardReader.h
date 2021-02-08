@@ -11,15 +11,15 @@ public:
     void update() {
         if (m_timer.update()) {
             if (rfid_scanner.PICC_IsNewCardPresent()) {
+                m_is_card_present = true;
                 rfid_scanner.PICC_ReadCardSerial();
-                digitalWrite(led_pin, HIGH);
                 int x = (int) rfid_scanner.uid.size;
                 m_id = "";
                 for (int i = 0; i < x; i++) {
                     m_id += String(rfid_scanner.uid.uidByte[i]);
                 }
             } else {
-                digitalWrite(led_pin, LOW);
+                m_is_card_present = false;
             }
         }
     };
@@ -28,8 +28,13 @@ public:
         return m_id;
     };
 
+    bool is_card_present(){
+        return m_is_card_present;
+    }
+
 private:
     MFRC522 rfid_scanner;
     Timer m_timer;
     String m_id;
+    bool m_is_card_present = false;
 };
