@@ -34,6 +34,7 @@ public:
         to_blink=0;
         is_blinking = false; //no more blinking when permanent on
         tgl(state);
+        current_state = state;
     };
 
     void blink(int nbr_blinks,float intervall=0.1f){
@@ -41,6 +42,7 @@ public:
         to_blink = nbr_blinks*2; //2* because on and off is one state each so for one time on and off you need two "blinks"
         permanent_on = false; //no permanent light when blinking
         tgl(true);
+        current_state = true;
     }
 
 
