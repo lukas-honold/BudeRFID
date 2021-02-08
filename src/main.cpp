@@ -84,28 +84,26 @@ public:
             {
             case States::WARTEN:
                 // Brüßungstext
-                hardware.displayManager.set_new_text("Was machen Sachen?");
+                hardware.displayManager.set_new_text("Chip auflegen");
 
                 // Karte auslesen und LED an- bzw. ausschalten
-                /*
                 if (hardware.cardReader.is_card_present())
                 {
                     hardware.ledManager.toggle_permanent(true);
+                    current_state = States::ID_GELESEN;
                 }
                 else
                 {
                     hardware.ledManager.toggle_permanent(false);
                 }
-                */
 
-                // Zustand setzen
-                current_state = States::ID_GELESEN;
                 // Testkommentar
                 break;
 
             case States::ID_GELESEN:
                 if (hardware.keypadManager.is_pressed())
                 {
+                    hardware.displayManager.set_new_text(String(hardware.keypadManager.get_key()));
                     if (hardware.keypadManager.get_key() == '*')
                     {
                         hardware.displayManager.set_new_text(String(hardware.keypadManager.get_key()));
