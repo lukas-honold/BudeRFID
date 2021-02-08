@@ -126,13 +126,10 @@ private:
 void setup()
 {
     Serial.begin(9600);
-    pinMode(relay_pin, OUTPUT);
-    digitalWrite(relay_pin, LOW);
     StateMaschine stm(20);
     stm.run();
 }
 
 void loop()
 {
-    digitalWrite(relay_pin, HIGH); // Selbsthaltung ausschalten
 }
