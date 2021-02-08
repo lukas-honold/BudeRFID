@@ -27,11 +27,14 @@
 #include "CardReader.h"
 #include "DisplayManager.h"
 #include "KeypadManager.h"
+#include "LEDManager.h"
+#include "PowerManager.h"
 
 #define relay_pin A3
 #define chip_select_rfid 5
 #define reset_rfid 4
 #define chip_select_sd 6
+#define ledpin 6
 
 
 
@@ -40,12 +43,13 @@ class Hardware {
 public:
     Hardware(int countdown) : dataManager(chip_select_sd), keypadManager(10),
                               cardReader(chip_select_rfid, reset_rfid, 4), displayManager(0x27, 20, 4, 5),
-                              ct(countdown) {};
+                              ct(countdown),powerManager(relay_pin) {};
     DataManager dataManager;
     KeypadManager keypadManager;
     CardReader cardReader;
     DisplayManager displayManager;
     Countdown ct;
+    PowerManager powerManager;
 };
 
 class StateMaschine {
@@ -82,8 +86,6 @@ private:
 
 void setup() {
     Serial.begin(9600);
-    pinMode(relay_pin, OUTPUT);
-    digitalWrite(relay_pin, LOW);
     StateMaschine stm(20);
     stm.run();
 }
