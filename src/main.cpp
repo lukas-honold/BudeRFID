@@ -76,7 +76,7 @@ public:
 
     void run()
     {
-        hardware.ledManager.blink(5, 0.05);
+        hardware.ledManager.blink(5, 1.f);
         while (hardware.ct.alive())
         {
             update();
@@ -87,6 +87,7 @@ public:
                 hardware.displayManager.set_new_text("Was machen Sachen?");
 
                 // Karte auslesen und LED an- bzw. ausschalten
+                /*
                 if (hardware.cardReader.is_card_present())
                 {
                     hardware.ledManager.toggle_permanent(true);
@@ -95,6 +96,7 @@ public:
                 {
                     hardware.ledManager.toggle_permanent(false);
                 }
+                */
 
                 // Zustand setzen
                 current_state = States::ID_GELESEN;
