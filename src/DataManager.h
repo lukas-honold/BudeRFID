@@ -1,3 +1,4 @@
+#pragma once
 class DataManager {
   public:
     DataManager(int cs) {
