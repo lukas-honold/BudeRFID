@@ -1,9 +1,20 @@
 class Countdown {
 public:
     Countdown(float seconds) {
+        init(seconds);
+    }
+
+    Countdown()=default;
+
+    void init(float seconds){
         init_time = seconds;
         last_time = millis();
         time_left = seconds * 1000.f;
+    }
+
+    void set_new_time(int new_init_time){
+        init_time = new_init_time;
+        reset();
     }
 
     void reset() {
