@@ -146,12 +146,12 @@ private:
 
 */
 
-void setup()
-{
+void setup() {
     Serial.begin(9600);
     StateMaschine stm;
 
     State *states[] = {
+<<<<<<< HEAD
         //new Test1State(stm),
         //new Test2State(stm),
         new ChipAuflegen(stm),
@@ -159,8 +159,15 @@ void setup()
     };
 
     stm.run(states, 2, StateIdentifier::CHIP_AUFLEGEN);
+=======
+            new Test1State(stm),
+            new Test2State(stm),
+    };
+
+    int nbr_states = sizeof(states) / sizeof(State*);
+    stm.run(states, nbr_states, StateIdentifier::State1);
+>>>>>>> c2e223e5072ab8ca6e92a1237633462fbd444f5e
 }
 
-void loop()
-{
+void loop() {
 }
