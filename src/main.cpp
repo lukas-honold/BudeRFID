@@ -1,24 +1,13 @@
+//internal arduino libs
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
+#include <SD.h>
 
-#define arduino_ide
-
-#ifdef arduino_ide
-
+//external libs
 #include <Keypad.h>
 #include <LiquidCrystal_I2C.h>
 #include <MFRC522.h>
-#include <SD.h>
-
-#else
-
-#include <Keypad/src/Keypad.h>
-#include <LiquidCrystal_I2C/LiquidCrystal_I2C.h>
-#include <MFRC522/src/MFRC522.h>
-#include <SD/src/SD.h>
-
-#endif
 
 #include "Timer.h"
 #include "Countdown.h"
@@ -35,6 +24,7 @@
 #define reset_rfid 4
 #define chip_select_sd 6
 #define led_pin 7
+
 
 class Hardware
 {
