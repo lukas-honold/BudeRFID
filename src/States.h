@@ -52,6 +52,7 @@ public:
 
     void init()
     {
+        pause = Countdown(1.f);
         paused = false;
     };
 
@@ -111,7 +112,7 @@ private:
     void set_text_and_pause(String text, float pause_time)
     {
         stateMaschine.hardware.displayManager.set_new_text(text);
-        pause = Countdown(pause_time);
+        pause.set_new_time(pause_time);
     };
 
     StateIdentifier next_state;
@@ -148,8 +149,12 @@ public:
 
     void init()
     {
+        counter = 0;
+        is_comma = false;
         betrag = "";
+        beschreibung = "";
         finished = false;
+        pause = Countdown(1.f);
     };
 
     void update()
@@ -163,21 +168,51 @@ public:
                 stateMaschine.hardware.displayManager.set_new_text("Abbruch");
                 stateMaschine.hardware.displayManager.set_new_text("", true);
                 next_state = StateIdentifier::AUSGABE;
-                pause = Countdown(1.f);
+                pause.set_new_time(1.f);
                 finished = true;
                 break;
 
             case 'A':
                 // Option Bestätigen
-                String id = stateMaschine.hardware.cardReader.get_id();
-                stateMaschine.hardware.dataManager.pay(-1 * betrag.toFloat(), id);
+                id = stateMaschine.hardware.cardReader.get_id();
+                stateMaschine.hardware.dataManager.pay(betrag.toFloat(), id);
                 // String person = stateMaschine.hardware.dataManager.person_to_string(id);
                 // stateMaschine.hardware.displayManager.set_new_text(person);
                 stateMaschine.hardware.displayManager.set_new_text("Neues Guthaben:");
                 stateMaschine.hardware.displayManager.set_new_text(String(stateMaschine.hardware.dataManager.person_guthaben(id)), true);
                 next_state = StateIdentifier::AUSGABE;
-                pause = Countdown(3.f);
+                pause.set_new_time(3.f);
                 finished = true;
+                break;
+
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                if (is_comma)
+                {
+                    counter++;
+                }
+                if (counter <=2) // maximal 2 Nachkommastellen zulassen
+                {
+                    betrag += stateMaschine.hardware.keypadManager.get_key();
+                    beschreibung = "Betrag: ";
+                    beschreibung += betrag;
+                }
+                stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
+                break;
+            case '#':
+                is_comma = true;
+                betrag += '.';
+                beschreibung = "Betrag: ";
+                beschreibung += betrag;
+                stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
                 break;
             };
         }
@@ -189,8 +224,9 @@ public:
     }
 
 private:
-    String betrag;
+    String beschreibung, betrag, id;
     StateIdentifier next_state;
-    bool finished;
+    bool finished, is_comma;
+    int counter;
     Countdown pause;
 };
