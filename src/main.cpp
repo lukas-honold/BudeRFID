@@ -15,6 +15,7 @@
 
 #include "Hardware.h"
 #include "Statemaschine.h"
+#include "States.h"
 
 
 #define led_pin 7
@@ -147,18 +148,14 @@ private:
 
 */
 
-
-
 void setup()
 {
-    Hardware hrdw(20);
     Serial.begin(9600);
-
-    StateMaschine stm(&hrdw);
+    StateMaschine stm;
 
     State* states[]={
-            new Test1State(&stm),
-            new Test2State(&stm),
+            new Test1State(stm),
+            new Test2State(stm),
     };
 
     stm.run(states,2,StateIdentifier::State1);

@@ -9,25 +9,25 @@ class StateMaschine;
 
 class State {
 public:
-    State(StateMaschine *stm):m_stm(stm) {};
+    State(StateMaschine &stm): stateMaschine(stm) {};
 
     virtual void update() = 0;
 
     StateIdentifier state_id;
-    StateMaschine* m_stm;
+    StateMaschine& stateMaschine;
 };
 
 class StateMaschine {
 public:
-    StateMaschine( Hardware* hrdw) {};
+    StateMaschine():hardware(20) {};
 
     void run(State** array_of_possible_states,int nbr_states,StateIdentifier start_state) {
         dyn_array = array_of_possible_states;
         current_state = start_state;
         m_nbr_states = nbr_states;
         switch_state(current_state);
-        while (hardware->ct.alive()){
-            hardware->update();
+        while (hardware.ct.alive()){
+            hardware.update();
             current_state_running->update();
         }
     };
@@ -47,7 +47,7 @@ public:
     };
     StateIdentifier current_state;
     State* current_state_running;
-    Hardware* hardware;
+    Hardware hardware;
     int m_nbr_states;
     State** dyn_array;
 private:
@@ -58,26 +58,3 @@ private:
 
 };
 
-class Test1State : public State {
-public:
-    Test1State(StateMaschine *stm):State(stm) {
-        state_id = StateIdentifier::State1;
-    };
-
-    void update(){
-        //hier sachen machen
-        Serial.println("State1");
-        m_stm->switch_state(StateIdentifier::State2);
-    }
-};
-
-class Test2State : public State {
-public:
-    Test2State(StateMaschine *stm):State(stm) {
-        state_id = StateIdentifier::State2;
-    };
-    void update(){
-        Serial.println("State2");
-        m_stm->switch_state(StateIdentifier::State1);
-    }
-};
