@@ -8,6 +8,8 @@ public:
         state_id = StateIdentifier::State1;
     };
 
+    void init(){};
+
     void update(){
         //hier sachen machen
         Serial.println("State1");
@@ -24,6 +26,10 @@ public:
         Serial.println("State2");
         stateMaschine.hardware.ledManager.toggle_permanent(true);
         stateMaschine.switch_state(StateIdentifier::State1);
+    }
+
+    void init(){
+        //wird einmal aufgerufen
     }
 
 private:

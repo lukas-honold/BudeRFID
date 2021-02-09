@@ -12,7 +12,7 @@ public:
     State(StateMaschine &stm): stateMaschine(stm) {};
 
     virtual void update() = 0;
-
+    virtual void init()=0;
     StateIdentifier state_id;
     StateMaschine& stateMaschine;
 };
@@ -40,6 +40,7 @@ public:
             {
                 current_state=new_state;
                 current_state_running = dyn_array[x];
+                current_state_running->init();
                 break;
             }
         }
