@@ -70,7 +70,7 @@ public:
             case 'A':
                 // Option Geld aufladen
                 stateMaschine.hardware.displayManager.set_new_text("Aufladen:");
-                stateMaschine.hardware.displayManager.set_new_text("0.00", true);
+                stateMaschine.hardware.displayManager.set_new_text("Betrag:", true);
                 next_state = StateIdentifier::AUFLADEN;
                 break;
             case 'B':
@@ -185,33 +185,32 @@ public:
                 finished = true;
                 break;
 
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
+            // Werden nicht behandelt --------
+            case 'B':
+            case 'C':
+            case 'D':
+                break;
+            // -------------------------------
+
+            case '#': 
+                is_comma = true;
+                betrag += '.';
+                beschreibung = "Betrag: ";
+                beschreibung += betrag;
+                stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
+                break;
+
+            default: // Zahlen von 0-9 werden behandelt
                 if (is_comma)
                 {
                     counter++;
                 }
-                if (counter <=2) // maximal 2 Nachkommastellen zulassen
+                if (counter <= 2) // maximal 2 Nachkommastellen zulassen
                 {
                     betrag += stateMaschine.hardware.keypadManager.get_key();
                     beschreibung = "Betrag: ";
                     beschreibung += betrag;
                 }
-                stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
-                break;
-            case '#':
-                is_comma = true;
-                betrag += '.';
-                beschreibung = "Betrag: ";
-                beschreibung += betrag;
                 stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
                 break;
             };

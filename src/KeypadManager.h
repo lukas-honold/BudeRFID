@@ -26,7 +26,6 @@ public:
       if (key)
       {
         pressed = true;
-        Serial.println(key);
       }
       else
       {
