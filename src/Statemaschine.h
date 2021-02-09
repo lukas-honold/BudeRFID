@@ -46,16 +46,28 @@ public:
         }
         //wenn wir hier ankommen dann haben wir ein problem
     };
+
+    void set_pause(float pause_time){
+        pause = Countdown(pause_time);
+    };
+
+    bool still_paused(){
+        return pause.alive();
+    }
+
     StateIdentifier current_state;
     State* current_state_running;
     Hardware hardware;
     int m_nbr_states;
     State** dyn_array;
+
 private:
     void update() {
         //hw update
         current_state_running->update();
     };
+
+    Countdown pause;
 
 };
 
