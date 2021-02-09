@@ -21,7 +21,6 @@ public:
   {
     if (timer.update())
     {
-
       key = keypad.getKey();
       if (key)
       {
@@ -47,7 +46,7 @@ public:
 
 private:
   Timer timer;
-  char key = 0;
+  char key;
   bool pressed = false;
   Keypad keypad;
 };

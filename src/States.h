@@ -64,7 +64,7 @@ public:
             {
             case ('*'):
                 // Option Abbruch
-                set_text_and_pause("Abbruch", 0.5f);
+                set_text_and_pause("Abbruch", 1.f);
                 next_state = StateIdentifier::AUSGABE;
                 break;
             case 'A':
@@ -188,11 +188,26 @@ public:
             // Werden nicht behandelt --------
             case 'B':
             case 'C':
-            case 'D':
                 break;
-            // -------------------------------
+                // -------------------------------
 
-            case '#': 
+            case 'D':
+                betrag.remove(betrag.length() - 1, 2);
+                if (is_comma)
+                {
+                    counter--;
+                }
+                if (counter == -1)
+                {
+                    is_comma = false;
+                    counter = 0;
+                }
+                beschreibung = "Betrag: ";
+                beschreibung += betrag;
+                stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
+                break;
+
+            case '#':
                 is_comma = true;
                 betrag += '.';
                 beschreibung = "Betrag: ";
@@ -200,18 +215,23 @@ public:
                 stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
                 break;
 
-            default: // Zahlen von 0-9 werden behandelt
-                if (is_comma)
-                {
-                    counter++;
-                }
-                if (counter <= 2) // maximal 2 Nachkommastellen zulassen
+            default:             // Zahlen von 0-9 werden behandelt
+                if (counter < 2) // maximal 2 Nachkommastellen zulassen
                 {
                     betrag += stateMaschine.hardware.keypadManager.get_key();
                     beschreibung = "Betrag: ";
                     beschreibung += betrag;
+                    stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
                 }
-                stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
+                else
+                {
+                    break;
+                }
+                if (is_comma)
+                {
+                    counter++;
+                }
+
                 break;
             };
         }

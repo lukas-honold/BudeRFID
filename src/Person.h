@@ -24,12 +24,13 @@ class Person {
     }
     // ------------------------------------------------
 
+
     // setter für das Guthaben
     void add_guthaben(float money){
       if(guthaben + money >= 0.f){
               guthaben += money;     
       } else {
-        // Fehlerbehandlung
+        // toDo: Fehlerbehandlung bei zu wenig Guthaben mit Displayausgabe nötig!
       }
         
     }

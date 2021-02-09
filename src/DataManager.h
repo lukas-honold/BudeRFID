@@ -2,15 +2,16 @@
 class DataManager
 {
 public:
-  DataManager(int cs){
-      //        Serial.print("Start");
-      //        if (!SD.begin(cs)) {
-      //            Serial.println("Card failed, or not present");
-      //            while (1) {};
-      //        } else {
-      //            Serial.println("card initialized.");
-      //        }
-      import_data();
+  DataManager(int cs)
+  {
+    //        Serial.print("Start");
+    //        if (!SD.begin(cs)) {
+    //            Serial.println("Card failed, or not present");
+    //            while (1) {};
+    //        } else {
+    //            Serial.println("card initialized.");
+    //        }
+    import_data();
   };
 
   ~DataManager(){};
@@ -20,7 +21,8 @@ public:
     personen[person_index_by_id(id)].add_guthaben(money);
   }
 
-  float person_guthaben(String id){
+  float person_guthaben(String id)
+  {
     return personen[person_index_by_id(id)].get_guthaben();
   }
 
@@ -33,8 +35,6 @@ public:
     data += personen[index].get_guthaben();
     return data;
   };
-
-
 
   void import_data()
   {
@@ -99,18 +99,22 @@ public:
     }
   };
 
-  void export_data(){
-    String data="";
-    for(int i=0; i<counter; i++){
-      data+=personen[i].get_name()+",";
-      data+=personen[i].get_id()+",";
-      data+=String(personen[i].get_guthaben())+";\n";
+  void export_data()
+  {
+    String data = "";
+    for (int i = 0; i < counter; i++)
+    {
+      data += personen[i].get_name() + ",";
+      data += personen[i].get_id() + ",";
+      data += String(personen[i].get_guthaben()) + ";\n";
     }
-    Serial.println(data);
+    Serial.println(data); // Dummy export prüfen
+    // hier SD Karte beschreiben --------------------
+
+    // ----------------------------------------------
   };
 
 private:
-
   int person_index_by_id(String id)
   {
     int person_index;
@@ -123,9 +127,7 @@ private:
       }
     }
     return -1;
-
   };
-
 
   int counter = 0;
   String daten;
