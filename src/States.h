@@ -48,24 +48,27 @@ public:
         state_id = StateIdentifier::ID_GELESEN;
     }
 
-    void init();
+    void init()
+    {
+        paused = false;
+    };
 
     void update()
     {
-        if (stateMaschine.hardware.keypadManager.is_pressed())
+        if (stateMaschine.hardware.keypadManager.is_pressed() && !paused)
         {
             // Option Karten_ID anzeigen
             if (stateMaschine.hardware.keypadManager.get_key() == '*')
             {
                 set_text_and_pause("Abbruch", 0.5f);
-                stateMaschine.switch_state(StateIdentifier::AUSGABE);
+                next_state = StateIdentifier::AUSGABE;
             }
 
             // Option Geld aufladen
             if (stateMaschine.hardware.keypadManager.get_key() == 'A')
             {
                 stateMaschine.hardware.displayManager.set_new_text("Betrag: ");
-                stateMaschine.switch_state(StateIdentifier::AUFLADEN);
+                next_state = StateIdentifier::AUFLADEN;
             }
 
             // Option 1.00€ abbuchen
@@ -73,7 +76,7 @@ public:
             {
                 stateMaschine.hardware.dataManager.pay(-1.f, stateMaschine.hardware.cardReader.get_id());
                 set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
-                stateMaschine.switch_state(StateIdentifier::AUSGABE);
+                next_state = StateIdentifier::AUSGABE;
             }
 
             // Option 0.50€ abbuchen
@@ -81,15 +84,22 @@ public:
             {
                 stateMaschine.hardware.dataManager.pay(-0.5f, stateMaschine.hardware.cardReader.get_id());
                 set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
-                stateMaschine.switch_state(StateIdentifier::AUSGABE);
+                next_state = StateIdentifier::AUSGABE;
             }
 
             // Option Karten_ID anzeigen
             if (stateMaschine.hardware.keypadManager.get_key() == 'D')
             {
                 set_text_and_pause(stateMaschine.hardware.cardReader.get_id(), 10.f);
-                stateMaschine.switch_state(StateIdentifier::AUSGABE);
+                next_state = StateIdentifier::AUSGABE;
             }
+
+            paused = true;
+        }
+
+        if (!pause.alive() && paused)
+        {
+            stateMaschine.switch_state(next_state);
         }
     };
 
@@ -97,8 +107,12 @@ private:
     void set_text_and_pause(String text, float pause_time)
     {
         stateMaschine.hardware.displayManager.set_new_text(text);
-        stateMaschine.set_pause(pause_time);
+        pause = Countdown(pause_time);
     };
+
+    StateIdentifier next_state;
+    bool paused;
+    Countdown pause;
 };
 
 class Ausgabe : public State
@@ -113,12 +127,9 @@ public:
 
     void update()
     {
-        if (!stateMaschine.still_paused())
-        {
-            stateMaschine.hardware.ct.reset();
-            stateMaschine.switch_state(StateIdentifier::CHIP_AUFLEGEN);
-        }
-    }
+        stateMaschine.hardware.ct.reset();
+        stateMaschine.switch_state(StateIdentifier::CHIP_AUFLEGEN);
+    };
 };
 
 /*
