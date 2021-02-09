@@ -5,7 +5,7 @@ Easily extensible for further use.
 ## **Features**
     Object Oriented Statemaschine
     RFID Scanner 
-    elf switch off 
+    Self switch off 
 
 
 
