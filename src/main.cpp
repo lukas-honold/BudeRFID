@@ -148,19 +148,18 @@ private:
 
 */
 
-void setup()
-{
+void setup() {
     Serial.begin(9600);
     StateMaschine stm;
 
-    State* states[]={
+    State *states[] = {
             new Test1State(stm),
             new Test2State(stm),
     };
 
-    stm.run(states,2,StateIdentifier::State1);
+    int nbr_states = sizeof(states) / sizeof(State*);
+    stm.run(states, nbr_states, StateIdentifier::State1);
 }
 
-void loop()
-{
+void loop() {
 }
