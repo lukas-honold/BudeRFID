@@ -17,9 +17,7 @@
 #include "Statemaschine.h"
 #include "States.h"
 
-
 #define led_pin 7
-
 
 /*
 
@@ -153,12 +151,14 @@ void setup()
     Serial.begin(9600);
     StateMaschine stm;
 
-    State* states[]={
-            new Test1State(stm),
-            new Test2State(stm),
+    State *states[] = {
+        //new Test1State(stm),
+        //new Test2State(stm),
+        new ChipAuflegen(stm),
+        new Warten(stm)
     };
 
-    stm.run(states,2,StateIdentifier::State1);
+    stm.run(states, 2, StateIdentifier::CHIP_AUFLEGEN);
 }
 
 void loop()

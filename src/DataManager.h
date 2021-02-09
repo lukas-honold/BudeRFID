@@ -10,6 +10,7 @@ public:
       //        } else {
       //            Serial.println("card initialized.");
       //        }
+      import_data();
   };
 
   ~DataManager(){};
