@@ -1,8 +1,5 @@
 //internal arduino libs
 #include <Arduino.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <SD.h>
 
 //external libs
 #include <Keypad.h>
@@ -158,7 +155,6 @@ void setup() {
     };
 
     auto nbr_states = sizeof(states)/sizeof(State*);
-
     stm.run(states, nbr_states, StateIdentifier::CHIP_AUFLEGEN);
 }
 
