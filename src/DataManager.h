@@ -94,6 +94,16 @@ public:
     }
   };
 
+  void export_data(){
+    String data="";
+    for(int i=0; i<counter; i++){
+      data+=personen[i].get_name()+",";
+      data+=personen[i].get_id()+",";
+      data+=String(personen[i].get_guthaben())+";\n";
+    }
+    Serial.println(data);
+  };
+
 private:
 
   int person_index_by_id(String id)

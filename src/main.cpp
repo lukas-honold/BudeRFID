@@ -97,8 +97,7 @@ public:
                     // Option Karten_ID anzeigen
                     if (hardware.keypadManager.get_key() == '*')
                     {
-                        hardware.displayManager.set_new_text("Abbruch");
-                        pause = Countdown(0.5f);
+                        set_text_and_pause("Abbruch", 0.5f);
                         current_state = States::AUSGABE;
                     }
 
@@ -106,23 +105,14 @@ public:
                     if (hardware.keypadManager.get_key() == 'A')
                     {
                         hardware.displayManager.set_new_text("Betrag: ");
-                        // Implementierung ... ---------------------------------
-
-
-
-
-
-
-                        // ------------------------------------------------------
-
+                        current_state = States::AUFLADEN;
                     }
 
                     // Option 1.00€ abbuchen
                     if (hardware.keypadManager.get_key() == 'B')
                     {
                         hardware.dataManager.pay(-1.f, hardware.cardReader.get_id());
-                        hardware.displayManager.set_new_text(hardware.dataManager.person_to_string(hardware.cardReader.get_id()));
-                        pause = Countdown(2.f);
+                        set_text_and_pause(hardware.dataManager.person_to_string(hardware.cardReader.get_id()), 2.f);
                         current_state = States::AUSGABE;
                     }
 
@@ -130,23 +120,26 @@ public:
                     if (hardware.keypadManager.get_key() == 'C')
                     {
                         hardware.dataManager.pay(-0.5f, hardware.cardReader.get_id());
-                        hardware.displayManager.set_new_text(hardware.dataManager.person_to_string(hardware.cardReader.get_id()));
-                        pause = Countdown(2.f);
+                        set_text_and_pause(hardware.dataManager.person_to_string(hardware.cardReader.get_id()), 2.f);
                         current_state = States::AUSGABE;
                     }
 
                     // Option Karten_ID anzeigen
                     if (hardware.keypadManager.get_key() == 'D')
                     {
-                        hardware.displayManager.set_new_text(hardware.cardReader.get_id());
-                        pause = Countdown(10.f);
+                        set_text_and_pause(hardware.cardReader.get_id(), 10.f);
                         current_state = States::AUSGABE;
                     }
                 }
                 break;
 
             case States::AUFLADEN:
+
+
+
+
                 break;
+                
             case States::AUSGABE:
                 if (!pause.alive())
                 {
@@ -160,6 +153,12 @@ public:
     };
 
 private:
+    void set_text_and_pause(String text, float pause_time){
+        hardware.displayManager.set_new_text(text);
+        pause = Countdown(pause_time);
+    }
+
+
     States current_state = States::CHIP_AUFLEGEN;
     Hardware hardware;
     Countdown pause;
