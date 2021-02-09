@@ -22,24 +22,22 @@ public:
     ~DisplayManager() = default;
 
     void set_new_text(String to_print, bool line = false) {
-        if(line){
+        if (line) {
             line2 = to_print;
-        } else{
+        } else {
             line1 = to_print;
         }
         changes_made = true;
     };
-
-
 
     void update() {
         if (m_timer.update()) {
             if (changes_made) {
                 changes_made = false;
                 lcd.clear();
-                lcd.setCursor(cursor_line1.x,cursor_line1.y);
+                lcd.setCursor(cursor_line1.x, cursor_line1.y);
                 lcd.print(line1);
-                lcd.setCursor(cursor_line2.x,cursor_line2.y);
+                lcd.setCursor(cursor_line2.x, cursor_line2.y);
                 lcd.print(line2);
             }
         }

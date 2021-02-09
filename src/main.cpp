@@ -157,7 +157,9 @@ void setup() {
         new Warten(stm)
     };
 
-    stm.run(states, 2, StateIdentifier::CHIP_AUFLEGEN);
+    auto nbr_states = sizeof(states)/sizeof(State*);
+
+    stm.run(states, nbr_states, StateIdentifier::CHIP_AUFLEGEN);
 }
 
 void loop() {
