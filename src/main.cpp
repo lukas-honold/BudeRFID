@@ -151,7 +151,9 @@ void setup() {
         //new Test1State(stm),
         //new Test2State(stm),
         new ChipAuflegen(stm),
-        new Warten(stm)
+        new Warten(stm),
+        new ID_Gelesen(stm),
+        new Ausgabe(stm)
     };
 
     auto nbr_states = sizeof(states)/sizeof(State*);
