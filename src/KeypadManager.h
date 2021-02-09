@@ -37,6 +37,7 @@ public:
 
   char get_key()
   {
+    pressed = false;
     return key;
   }
 

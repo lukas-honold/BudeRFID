@@ -2,7 +2,7 @@
 #include "Hardware.h"
 
 enum class StateIdentifier {
-    CHIP_AUFLEGEN, WARTEN, ID_GELESEN, AUFLADEN, AUSGABE, State1, State2, State3
+    CHIP_AUFLEGEN, WARTEN, ID_GELESEN, AUFLADEN, AUSGABE
 };
 
 class StateMaschine;
@@ -15,6 +15,7 @@ public:
     virtual void init()=0;
     StateIdentifier state_id;
     StateMaschine& stateMaschine;
+    
 };
 
 class StateMaschine {

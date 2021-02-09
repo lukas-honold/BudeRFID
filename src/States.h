@@ -52,18 +52,14 @@ public:
 
     void init()
     {
-        Serial.print("Hallo jemand zuhause?");
         paused = false;
     };
 
     void update()
     {
-        
         if (stateMaschine.hardware.keypadManager.is_pressed() && !paused)
         {
-            char key = stateMaschine.hardware.keypadManager.get_key();
-            Serial.println(key);
-            switch (key)
+            switch (stateMaschine.hardware.keypadManager.get_key())
             {
             case ('*'):
                 // Option Abbruch
@@ -72,7 +68,8 @@ public:
                 break;
             case 'A':
                 // Option Geld aufladen
-                stateMaschine.hardware.displayManager.set_new_text("Betrag: ");
+                stateMaschine.hardware.displayManager.set_new_text("Aufladen:");
+                stateMaschine.hardware.displayManager.set_new_text("0.00", true);
                 next_state = StateIdentifier::AUFLADEN;
                 break;
             case 'B':
@@ -135,26 +132,65 @@ public:
     void update()
     {
         stateMaschine.hardware.ct.reset();
+        stateMaschine.hardware.displayManager.set_new_text("");
+        stateMaschine.hardware.displayManager.set_new_text("", true);
         stateMaschine.switch_state(StateIdentifier::CHIP_AUFLEGEN);
-    };
+    }
 };
 
-/*
-class Test1State : public State
+class Aufladen : public State
 {
 public:
-    Test1State(StateMaschine &stm) : State(stm)
+    Aufladen(StateMaschine &stm) : State(stm)
     {
-        state_id = StateIdentifier::State1;
-    };
+        state_id = StateIdentifier::AUFLADEN;
+    }
 
-    void init(){};
+    void init()
+    {
+        betrag = "";
+        finished = false;
+    };
 
     void update()
     {
-        //hier sachen machen
-        Serial.println("State1");
-        stateMaschine.switch_state(StateIdentifier::State2);
+        if (stateMaschine.hardware.keypadManager.is_pressed() && !finished)
+        {
+            switch (stateMaschine.hardware.keypadManager.get_key())
+            {
+            case '*':
+                // Option Abbruch
+                stateMaschine.hardware.displayManager.set_new_text("Abbruch");
+                stateMaschine.hardware.displayManager.set_new_text("", true);
+                next_state = StateIdentifier::AUSGABE;
+                pause = Countdown(1.f);
+                finished = true;
+                break;
+
+            case 'A':
+                // Option Bestätigen
+                String id = stateMaschine.hardware.cardReader.get_id();
+                stateMaschine.hardware.dataManager.pay(-1 * betrag.toFloat(), id);
+                // String person = stateMaschine.hardware.dataManager.person_to_string(id);
+                // stateMaschine.hardware.displayManager.set_new_text(person);
+                stateMaschine.hardware.displayManager.set_new_text("Neues Guthaben:");
+                stateMaschine.hardware.displayManager.set_new_text(String(stateMaschine.hardware.dataManager.person_guthaben(id)), true);
+                next_state = StateIdentifier::AUSGABE;
+                pause = Countdown(3.f);
+                finished = true;
+                break;
+            };
+        }
+
+        if (!pause.alive() && finished)
+        {
+            stateMaschine.switch_state(next_state);
+        }
     }
+
+private:
+    String betrag;
+    StateIdentifier next_state;
+    bool finished;
+    Countdown pause;
 };
-*/

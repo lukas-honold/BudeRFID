@@ -20,6 +20,10 @@ public:
     personen[person_index_by_id(id)].add_guthaben(money);
   }
 
+  float person_guthaben(String id){
+    return personen[person_index_by_id(id)].get_guthaben();
+  }
+
   String person_to_string(String id)
   {
     int index = person_index_by_id(id);

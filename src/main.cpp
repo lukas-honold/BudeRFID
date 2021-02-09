@@ -153,7 +153,8 @@ void setup() {
         new ChipAuflegen(stm),
         new Warten(stm),
         new ID_Gelesen(stm),
-        new Ausgabe(stm)
+        new Ausgabe(stm),
+        new Aufladen(stm)
     };
 
     auto nbr_states = sizeof(states)/sizeof(State*);
