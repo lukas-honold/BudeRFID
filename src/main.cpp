@@ -59,9 +59,8 @@ public:
         WARTEN,
         CHIP_AUFLEGEN,
         ID_GELESEN,
-        ABGEBUCHT,
         AUFLADEN,
-        ID_AUSGEGEBEN,
+        AUSGABE,
         AUSSCHALTEN
     };
 
@@ -77,7 +76,7 @@ public:
 
     void run()
     {
-        hardware.ledManager.blink(5, 1.f);
+        hardware.dataManager.import_data();
         while (hardware.ct.alive())
         {
             update();
@@ -95,33 +94,75 @@ public:
                 // Karte auslesen und LED an- bzw. ausschalten
                 if (hardware.cardReader.is_card_present())
                 {
-                    hardware.ledManager.toggle_permanent(true);
-                    hardware.displayManager.set_new_text(hardware.cardReader.get_id());
+                    hardware.ledManager.blink(1, 3.f);
+                    hardware.displayManager.set_new_text(hardware.dataManager.person_to_string(hardware.cardReader.get_id()));
                     current_state = States::ID_GELESEN;
                 }
 
-                // Testkommentar
                 break;
 
             case States::ID_GELESEN:
-                hardware.ledManager.toggle_permanent(hardware.cardReader.is_card_present());
-
                 if (hardware.keypadManager.is_pressed())
                 {
-                    hardware.ct.reset();
-                    hardware.displayManager.set_new_text(String(hardware.keypadManager.get_key()));
+                    // Option Karten_ID anzeigen
                     if (hardware.keypadManager.get_key() == '*')
                     {
-                        hardware.displayManager.set_new_text(String(hardware.keypadManager.get_key()));
-                        current_state = States::ID_AUSGEGEBEN;
+                        hardware.displayManager.set_new_text("Abbruch");
+                        pause = Countdown(0.5f);
+                        current_state = States::AUSGABE;
+                    }
+
+                    // Option Geld aufladen
+                    if (hardware.keypadManager.get_key() == 'A')
+                    {
+                        hardware.displayManager.set_new_text("Betrag: ");
+                        // Implementierung ... ---------------------------------
+
+
+
+
+
+
+                        // ------------------------------------------------------
+
+                    }
+
+                    // Option 1.00€ abbuchen
+                    if (hardware.keypadManager.get_key() == 'B')
+                    {
+                        hardware.dataManager.pay(-1.f, hardware.cardReader.get_id());
+                        hardware.displayManager.set_new_text(hardware.dataManager.person_to_string(hardware.cardReader.get_id()));
+                        pause = Countdown(2.f);
+                        current_state = States::AUSGABE;
+                    }
+
+                    // Option 0.50€ abbuchen
+                    if (hardware.keypadManager.get_key() == 'C')
+                    {
+                        hardware.dataManager.pay(-0.5f, hardware.cardReader.get_id());
+                        hardware.displayManager.set_new_text(hardware.dataManager.person_to_string(hardware.cardReader.get_id()));
+                        pause = Countdown(2.f);
+                        current_state = States::AUSGABE;
+                    }
+
+                    // Option Karten_ID anzeigen
+                    if (hardware.keypadManager.get_key() == 'D')
+                    {
+                        hardware.displayManager.set_new_text(hardware.cardReader.get_id());
+                        pause = Countdown(10.f);
+                        current_state = States::AUSGABE;
                     }
                 }
                 break;
-            case States::ABGEBUCHT:
-                break;
+
             case States::AUFLADEN:
                 break;
-            case States::ID_AUSGEGEBEN:
+            case States::AUSGABE:
+                if (!pause.alive())
+                {
+                    hardware.ct.reset();
+                    current_state = States::CHIP_AUFLEGEN;
+                }
                 break;
             }
         }
@@ -131,6 +172,7 @@ public:
 private:
     States current_state = States::CHIP_AUFLEGEN;
     Hardware hardware;
+    Countdown pause;
 };
 
 void setup()

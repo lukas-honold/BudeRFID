@@ -15,6 +15,7 @@ class DisplayManager {
       changes_made = true;
     };
 
+
     void update() {
       if (m_timer.update()) {
           if (changes_made){
@@ -22,8 +23,8 @@ class DisplayManager {
               lcd.clear();
               lcd.setCursor(0, 0);
               lcd.print(next_input);
-
           }
+
 
       }
     };
@@ -31,7 +32,9 @@ class DisplayManager {
   private:
     Timer m_timer;
     String next_input;
+    String next_input_second_line;
     LiquidCrystal_I2C lcd;  // set the LCD address to 0x27 for a 16 chars and 2 line display
     float frametime = 0.f;
     bool changes_made = false;
+    bool changes_made_second_line = false;
 };
