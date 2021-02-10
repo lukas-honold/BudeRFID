@@ -11,9 +11,12 @@ public:
         state_id = StateIdentifier::CHIP_AUFLEGEN;
     };
 
+    void init(){
+        stateMaschine.hardware.displayManager.set_new_text("Chip auflegen");
+    }
+
     void update()
     {
-        stateMaschine.hardware.displayManager.set_new_text("Chip auflegen");
         stateMaschine.switch_state(StateIdentifier::WARTEN);
     }
 };
@@ -28,8 +31,6 @@ public:
 
     void update()
     {
-        //stateMaschine.hardware.displayManager.write_percentage_char({0, 1}, stateMaschine.hardware.ct.percentage_left());
-
         if (stateMaschine.hardware.cardReader.is_card_present())
         {
             stateMaschine.hardware.ledManager.blink(1, 3.f);

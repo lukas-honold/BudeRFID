@@ -69,7 +69,6 @@ public:
 private:
     void update()
     {
-        //hw update
         current_state_running->update();
     };
 };
