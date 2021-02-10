@@ -13,7 +13,7 @@ public:
     DisplayManager(int address, int p1, int p2, int i_framerate) : lcd(address, p1, p2), m_timer(i_framerate) {
         lcd.init();
         lcd.backlight();
-        lcd.setCursor(3, 0);
+        lcd.setCursor(0, 0);
         cursor_line1.x = 0;
         cursor_line2.y = 0;
         cursor_line2.x = 0;
@@ -32,12 +32,6 @@ public:
 
     void update() {
         if (m_timer.update()) {
-            update_display();
-        }
-    };
-
-private:
-    void update_display(){
             if (changes_made) {
                 changes_made = false;
                 lcd.clear();
@@ -46,11 +40,10 @@ private:
                 lcd.setCursor(cursor_line2.x, cursor_line2.y);
                 lcd.print(line2);
             }
+        }
     };
 
-
-
-
+private:
     String line1, line2;
     Cursor cursor_line1, cursor_line2;
     Timer m_timer;
