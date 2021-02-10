@@ -54,6 +54,7 @@ public:
     {
         pause = Countdown(1.f);
         paused = false;
+        payment_success = false;
     };
 
     void update()
@@ -75,20 +76,29 @@ public:
                 break;
             case 'B':
                 // Option 1.00€ abbuchen
-                stateMaschine.hardware.dataManager.pay(-1.f, stateMaschine.hardware.cardReader.get_id());
-                set_text_and_pause(
-                    stateMaschine.hardware.dataManager.person_to_string(
-                        stateMaschine.hardware.cardReader.get_id()),
-                    2.f);
+                payment_success = stateMaschine.hardware.dataManager.pay(-1.f, stateMaschine.hardware.cardReader.get_id());
+                if (payment_success)
+                {
+                    set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
+                }
+                else
+                {
+                    set_text_and_pause("Nicht genug Geld", 2.f);
+                }
+
                 next_state = StateIdentifier::AUSGABE;
                 break;
             case 'C':
                 // Option 0.50€ abbuchen
-                stateMaschine.hardware.dataManager.pay(-0.5f, stateMaschine.hardware.cardReader.get_id());
-                set_text_and_pause(
-                    stateMaschine.hardware.dataManager.person_to_string(
-                        stateMaschine.hardware.cardReader.get_id()),
-                    2.f);
+                payment_success = stateMaschine.hardware.dataManager.pay(-0.5f, stateMaschine.hardware.cardReader.get_id());
+                if (payment_success)
+                {
+                    set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
+                }
+                else
+                {
+                    set_text_and_pause("Nicht genug Geld", 2.f);
+                }
                 next_state = StateIdentifier::AUSGABE;
                 break;
             case 'D':
@@ -116,7 +126,7 @@ private:
     };
 
     StateIdentifier next_state;
-    bool paused;
+    bool paused, payment_success;
     Countdown pause;
 };
 
@@ -202,13 +212,13 @@ public:
                     is_comma = false;
                     counter = 0;
                 }
-                stateMaschine.hardware.displayManager.set_new_text(String("Betrag: "+betrag), true);
+                stateMaschine.hardware.displayManager.set_new_text(String("Betrag: " + betrag), true);
                 break;
 
             case '#':
                 is_comma = true;
                 betrag += '.';
-                stateMaschine.hardware.displayManager.set_new_text(String("Betrag: "+betrag), true);
+                stateMaschine.hardware.displayManager.set_new_text(String("Betrag: " + betrag), true);
                 break;
 
             default:             // Zahlen von 0-9 werden behandelt
