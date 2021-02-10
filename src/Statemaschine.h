@@ -16,9 +16,8 @@ class State
 {
 public:
     State(StateMaschine &stm) : stateMaschine(stm){};
-
     virtual void update() = 0;
-    virtual void init() = 0;
+    virtual void init(){};
     virtual void leave(){};
     StateIdentifier state_id;
     StateMaschine &stateMaschine;

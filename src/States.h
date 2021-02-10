@@ -11,8 +11,6 @@ public:
         state_id = StateIdentifier::CHIP_AUFLEGEN;
     };
 
-    void init() {}
-
     void update()
     {
         stateMaschine.hardware.displayManager.set_new_text("Chip auflegen");
@@ -27,8 +25,6 @@ public:
     {
         state_id = StateIdentifier::WARTEN;
     };
-
-    void init(){};
 
     void update()
     {
@@ -137,8 +133,6 @@ public:
     {
         state_id = StateIdentifier::AUSGABE;
     }
-
-    void init(){};
 
     void update()
     {
