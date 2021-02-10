@@ -6,6 +6,31 @@ struct Cursor {
     int y = 0;
 };
 
+class CustomCharGenerator{
+public:
+    CustomCharGenerator(){
+        byte customChar[8] = {
+                B00000,
+                B00000,
+                B00000,
+                B00000,
+                B00000,
+                B00000,
+                B00000,
+                B00000
+        };
+        byte full = B11111;
+        for(int x=7;x<0;x--){
+            customChar[x]= full;
+            for(int y=0;y<7;y++)
+                new_chars[x][y]=customChar[y];
+        }
+    }
+    byte new_chars[8][8];
+};
+
+
+
 class DisplayManager {
 public:
     DisplayManager(int address, int p1, int p2, int i_framerate) : lcd(address, p1, p2), m_timer(i_framerate) {
@@ -16,9 +41,16 @@ public:
         cursor_line2.y = 0;
         cursor_line2.x = 0;
         cursor_line2.y = 1;
-
+        CustomCharGenerator gen;
+        for(int x=0;x<7;x++){
+            lcd.createChar(x, gen.new_chars[x]);
+        }
     };
 
+    void write_percentage_char(Cursor position,int percent){
+        lcd.setCursor(position.x,position.y);
+        lcd.write(byte(int(map(percent,0,100,0,7)))); //map percentage to respective char
+    }
     ~DisplayManager() = default;
 
     void set_new_text(String to_print, bool line = false) {
