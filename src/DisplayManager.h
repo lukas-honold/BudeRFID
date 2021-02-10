@@ -6,8 +6,6 @@ struct Cursor {
     int y = 0;
 };
 
-
-
 class DisplayManager {
 public:
     DisplayManager(int address, int p1, int p2, int i_framerate) : lcd(address, p1, p2), m_timer(i_framerate) {

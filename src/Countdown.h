@@ -35,10 +35,6 @@ public:
 
     float getTimeLeft() { return time_left; }
 
-    int percentage_left(){
-        return (100.f/init_time)*time_left;
-    }
-
 private:
     float last_time;
     float init_time;

@@ -18,7 +18,7 @@ public:
 
   bool pay(float money, String id)
   {
-    return personen[person_index_by_id(id)].add_guthaben(money);
+    personen[person_index_by_id(id)].add_guthaben(money);
   }
 
   float person_guthaben(String id)
@@ -29,9 +29,7 @@ public:
   String person_to_string(String id)
   {
     int index = person_index_by_id(id);
-    if(index == -1){
-      return "Falsche Karte";
-    }
+
     String data;
     data += personen[index].get_name();
     data += ": ";
@@ -133,7 +131,6 @@ private:
   };
 
   int counter = 0;
-  bool id_valid = false;
   String daten;
   Person personen[10];
 };
