@@ -192,7 +192,7 @@ public:
                 // -------------------------------
 
             case 'D':
-                betrag.remove(betrag.length() - 1, 2);
+                betrag.remove(betrag.length() - 1);
                 if (is_comma)
                 {
                     counter--;
