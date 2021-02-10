@@ -47,8 +47,8 @@ public:
         }
     };
     void write_percentage_char(Cursor position,int percent){
-        lcd.setCursor(position.x,position.y);
-        lcd.write(byte(map(percent,0,100,0,7))); //map percentage to respective char
+        custom_char_cursor = position;
+        current_custom_char = byte(map(percent,0,100,0,7));//map percentage to respective char
     }
     ~DisplayManager() = default;
 
@@ -67,6 +67,9 @@ public:
         }
     };
 
+    bool custom_char_gets_drawn = false;
+
+
 private:
     void update_display(){
             if (changes_made) {
@@ -76,11 +79,19 @@ private:
                 lcd.print(line1);
                 lcd.setCursor(cursor_line2.x, cursor_line2.y);
                 lcd.print(line2);
+                if(custom_char_gets_drawn){
+                    lcd.setCursor(custom_char_cursor.x,custom_char_cursor.y);
+                    lcd.write(current_custom_char);
+                }
             }
     };
 
+
+
+
     String line1, line2;
-    Cursor cursor_line1, cursor_line2;
+    Cursor cursor_line1, cursor_line2,custom_char_cursor;
+    byte current_custom_char=0;
     Timer m_timer;
     LiquidCrystal_I2C lcd;  // set the LCD address to 0x27 for a 16 chars and 2 line display
     float frametime = 0.f;
