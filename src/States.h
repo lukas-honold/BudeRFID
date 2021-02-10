@@ -202,17 +202,13 @@ public:
                     is_comma = false;
                     counter = 0;
                 }
-                beschreibung = "Betrag: ";
-                beschreibung += betrag;
-                stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
+                stateMaschine.hardware.displayManager.set_new_text(String("Betrag: "+betrag), true);
                 break;
 
             case '#':
                 is_comma = true;
                 betrag += '.';
-                beschreibung = "Betrag: ";
-                beschreibung += betrag;
-                stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
+                stateMaschine.hardware.displayManager.set_new_text(String("Betrag: "+betrag), true);
                 break;
 
             default:             // Zahlen von 0-9 werden behandelt
