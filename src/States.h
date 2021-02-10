@@ -225,9 +225,7 @@ public:
                 if (counter < 2) // maximal 2 Nachkommastellen zulassen
                 {
                     betrag += stateMaschine.hardware.keypadManager.get_key();
-                    beschreibung = "Betrag: ";
-                    beschreibung += betrag;
-                    stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
+                    stateMaschine.hardware.displayManager.set_new_text(String("Betrag: "+betrag), true);
                 }
                 else
                 {
