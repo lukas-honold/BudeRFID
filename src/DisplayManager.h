@@ -20,9 +20,9 @@ public:
                 B00000
         };
         byte full = B11111;
-        for(int x=7;x<0;x--){
+        for(int x=7;x<=0;x--){
             customChar[x]= full;
-            for(int y=0;y<7;y++)
+            for(int y=0;y<8;y++)
                 new_chars[x][y]=customChar[y];
         }
     }
@@ -42,11 +42,10 @@ public:
         cursor_line2.x = 0;
         cursor_line2.y = 1;
         CustomCharGenerator gen;
-        for(int x=0;x<7;x++){
+        for(int x=0;x<8;x++){
             lcd.createChar(x, gen.new_chars[x]);
         }
     };
-
     void write_percentage_char(Cursor position,int percent){
         lcd.setCursor(position.x,position.y);
         lcd.write(byte(int(map(percent,0,100,0,7)))); //map percentage to respective char
@@ -64,6 +63,12 @@ public:
 
     void update() {
         if (m_timer.update()) {
+            update_display();
+        }
+    };
+
+private:
+    void update_display(){
             if (changes_made) {
                 changes_made = false;
                 lcd.clear();
@@ -72,10 +77,8 @@ public:
                 lcd.setCursor(cursor_line2.x, cursor_line2.y);
                 lcd.print(line2);
             }
-        }
     };
 
-private:
     String line1, line2;
     Cursor cursor_line1, cursor_line2;
     Timer m_timer;
