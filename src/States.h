@@ -26,11 +26,6 @@ public:
         state_id = StateIdentifier::WARTEN;
     };
 
-    void init()
-    {
-        //stateMaschine.hardware.displayManager.custom_char_gets_drawn = true;
-    }
-
     void update()
     {
         //stateMaschine.hardware.displayManager.write_percentage_char({0, 1}, stateMaschine.hardware.ct.percentage_left());
@@ -42,11 +37,6 @@ public:
                 stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()));
             stateMaschine.switch_state(StateIdentifier::ID_GELESEN);
         }
-    }
-
-    void leave()
-    {
-        //stateMaschine.hardware.displayManager.custom_char_gets_drawn = false;
     }
 };
 
