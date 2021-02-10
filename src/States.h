@@ -1,125 +1,118 @@
 #pragma once
 
-#include "Statemaschine.h"
 #include <Arduino.h>
 
-class ChipAuflegen : public State
-{
-public:
-    ChipAuflegen(StateMaschine &stm) : State(stm)
-    {
+#include "Statemaschine.h"
+
+class ChipAuflegen : public State {
+   public:
+    ChipAuflegen(StateMaschine &stm) : State(stm) {
         state_id = StateIdentifier::CHIP_AUFLEGEN;
     };
 
     void init() {}
 
-    void update()
-    {
+    void update() {
         stateMaschine.hardware.displayManager.set_new_text("Chip auflegen");
         stateMaschine.switch_state(StateIdentifier::WARTEN);
     }
 };
 
-class Warten : public State
-{
-public:
-    Warten(StateMaschine &stm) : State(stm)
-    {
+class Warten : public State {
+   public:
+    Warten(StateMaschine &stm) : State(stm) {
         state_id = StateIdentifier::WARTEN;
     };
 
     void init(){};
 
-    void update()
-    {
-        if (stateMaschine.hardware.cardReader.is_card_present())
-        {
+    void update() {
+        new_time_left = int(stateMaschine.hardware.ct.getTimeLeft() / 1000);
+        Serial.println(new_time_left);
+        if (new_time_left != time_left) {
+            time_left = new_time_left;
+            standby_message = "Standby in: ";
+            standby_message += time_left;
+            stateMaschine.hardware.displayManager.set_new_text(standby_message, true);
+        }
+        if (stateMaschine.hardware.cardReader.is_card_present()) {
             stateMaschine.hardware.ledManager.blink(1, 3.f);
             stateMaschine.hardware.displayManager.set_new_text(
                 stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()));
+            stateMaschine.hardware.displayManager.set_new_text("", true);
             stateMaschine.switch_state(StateIdentifier::ID_GELESEN);
         }
     }
+
+   private:
+    int time_left, new_time_left;
+    String standby_message;
 };
 
-class ID_Gelesen : public State
-{
-public:
-    ID_Gelesen(StateMaschine &stm) : State(stm)
-    {
+class ID_Gelesen : public State {
+   public:
+    ID_Gelesen(StateMaschine &stm) : State(stm) {
         state_id = StateIdentifier::ID_GELESEN;
     }
 
-    void init()
-    {
+    void init() {
         pause = Countdown(1.f);
         paused = false;
         payment_successful = false;
     };
 
-    void update()
-    {
-        if (stateMaschine.hardware.keypadManager.is_pressed() && !paused)
-        {
-            switch (stateMaschine.hardware.keypadManager.get_key())
-            {
-            case ('*'):
-                // Option Abbruch
-                set_text_and_pause("Abbruch", 1.f);
-                next_state = StateIdentifier::AUSGABE;
-                break;
-            case 'A':
-                // Option Geld aufladen
-                stateMaschine.hardware.displayManager.set_new_text("Aufladen:");
-                stateMaschine.hardware.displayManager.set_new_text("Betrag:", true);
-                next_state = StateIdentifier::AUFLADEN;
-                break;
-            case 'B':
-                // Option 1.00€ abbuchen
-                payment_successful = stateMaschine.hardware.dataManager.pay(-1.f, stateMaschine.hardware.cardReader.get_id());
-                if (payment_successful)
-                {
-                    set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
-                }
-                else
-                {
-                    set_text_and_pause("Nicht genug Geld", 2.f);
-                }
-                next_state = StateIdentifier::AUSGABE;
-                break;
-            case 'C':
-                // Option 0.50€ abbuchen
-                payment_successful = stateMaschine.hardware.dataManager.pay(-0.5f, stateMaschine.hardware.cardReader.get_id());
-                if (payment_successful)
-                {
-                    set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
-                }
-                else
-                {
-                    set_text_and_pause("Nicht genug Geld", 2.f);
-                }
-                next_state = StateIdentifier::AUSGABE;
-                break;
-            case 'D':
-                // Option Karten_ID anzeigen
-                set_text_and_pause(stateMaschine.hardware.cardReader.get_id(), 10.f);
-                next_state = StateIdentifier::AUSGABE;
-                break;
-            default:
-                break;
+    void update() {
+        if (stateMaschine.hardware.keypadManager.is_pressed() && !paused) {
+            switch (stateMaschine.hardware.keypadManager.get_key()) {
+                case ('*'):
+                    // Option Abbruch
+                    set_text_and_pause("Abbruch", 1.f);
+                    next_state = StateIdentifier::AUSGABE;
+                    break;
+                case 'A':
+                    // Option Geld aufladen
+                    stateMaschine.hardware.displayManager.set_new_text("Aufladen:");
+                    stateMaschine.hardware.displayManager.set_new_text("Betrag:", true);
+                    next_state = StateIdentifier::AUFLADEN;
+                    break;
+                case 'B':
+                    // Option 1.00€ abbuchen
+                    payment_successful = stateMaschine.hardware.dataManager.pay(-1.f, stateMaschine.hardware.cardReader.get_id());
+                    if (payment_successful) {
+                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
+                    } else {
+                        set_text_and_pause("Nicht genug Geld", 2.f);
+                    }
+                    next_state = StateIdentifier::AUSGABE;
+                    break;
+                case 'C':
+                    // Option 0.50€ abbuchen
+                    payment_successful = stateMaschine.hardware.dataManager.pay(-0.5f, stateMaschine.hardware.cardReader.get_id());
+                    if (payment_successful) {
+                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
+                    } else {
+                        set_text_and_pause("Nicht genug Geld", 2.f);
+                    }
+                    next_state = StateIdentifier::AUSGABE;
+                    break;
+                case 'D':
+                    // Option Karten_ID anzeigen
+                    set_text_and_pause(stateMaschine.hardware.cardReader.get_id(), 10.f);
+                    next_state = StateIdentifier::AUSGABE;
+                    break;
+                default:
+                    break;
             }
             paused = true;
         }
 
-        if (!pause.alive() && paused)
-        {
+        if (!pause.alive() && paused) {
             stateMaschine.switch_state(next_state);
         }
     };
 
-private:
-    void set_text_and_pause(String text, float pause_time)
-    {
+   private:
+    void set_text_and_pause(String text, float pause_time) {
         stateMaschine.hardware.displayManager.set_new_text(text);
         pause.set_new_time(pause_time);
     };
@@ -129,18 +122,15 @@ private:
     Countdown pause;
 };
 
-class Ausgabe : public State
-{
-public:
-    Ausgabe(StateMaschine &stm) : State(stm)
-    {
+class Ausgabe : public State {
+   public:
+    Ausgabe(StateMaschine &stm) : State(stm) {
         state_id = StateIdentifier::AUSGABE;
     }
 
     void init(){};
 
-    void update()
-    {
+    void update() {
         stateMaschine.hardware.ct.reset();
         stateMaschine.hardware.displayManager.set_new_text("");
         stateMaschine.hardware.displayManager.set_new_text("", true);
@@ -148,16 +138,13 @@ public:
     }
 };
 
-class Aufladen : public State
-{
-public:
-    Aufladen(StateMaschine &stm) : State(stm)
-    {
+class Aufladen : public State {
+   public:
+    Aufladen(StateMaschine &stm) : State(stm) {
         state_id = StateIdentifier::AUFLADEN;
     }
 
-    void init()
-    {
+    void init() {
         counter = 0;
         is_comma = false;
         betrag = "";
@@ -166,92 +153,83 @@ public:
         pause = Countdown(1.f);
     };
 
-    void update()
-    {
-        if (stateMaschine.hardware.keypadManager.is_pressed() && !finished)
-        {
-            switch (stateMaschine.hardware.keypadManager.get_key())
-            {
-            case '*':
-                // Option Abbruch
-                stateMaschine.hardware.displayManager.set_new_text("Abbruch");
-                stateMaschine.hardware.displayManager.set_new_text("", true);
-                next_state = StateIdentifier::AUSGABE;
-                pause.set_new_time(1.f);
-                finished = true;
-                break;
+    void update() {
+        if (stateMaschine.hardware.keypadManager.is_pressed() && !finished) {
+            switch (stateMaschine.hardware.keypadManager.get_key()) {
+                case '*':
+                    // Option Abbruch
+                    stateMaschine.hardware.displayManager.set_new_text("Abbruch");
+                    stateMaschine.hardware.displayManager.set_new_text("", true);
+                    next_state = StateIdentifier::AUSGABE;
+                    pause.set_new_time(1.f);
+                    finished = true;
+                    break;
 
-            case 'A':
-                // Option Bestätigen
-                id = stateMaschine.hardware.cardReader.get_id();
-                stateMaschine.hardware.dataManager.pay(betrag.toFloat(), id);
-                // String person = stateMaschine.hardware.dataManager.person_to_string(id);
-                // stateMaschine.hardware.displayManager.set_new_text(person);
-                stateMaschine.hardware.displayManager.set_new_text("Neues Guthaben:");
-                stateMaschine.hardware.displayManager.set_new_text(String(stateMaschine.hardware.dataManager.person_guthaben(id)), true);
-                next_state = StateIdentifier::AUSGABE;
-                pause.set_new_time(3.f);
-                finished = true;
-                break;
+                case 'A':
+                    // Option Bestätigen
+                    id = stateMaschine.hardware.cardReader.get_id();
+                    stateMaschine.hardware.dataManager.pay(betrag.toFloat(), id);
+                    // String person = stateMaschine.hardware.dataManager.person_to_string(id);
+                    // stateMaschine.hardware.displayManager.set_new_text(person);
+                    stateMaschine.hardware.displayManager.set_new_text("Neues Guthaben:");
+                    stateMaschine.hardware.displayManager.set_new_text(String(stateMaschine.hardware.dataManager.person_guthaben(id)), true);
+                    next_state = StateIdentifier::AUSGABE;
+                    pause.set_new_time(3.f);
+                    finished = true;
+                    break;
 
-                // Werden nicht behandelt --------
-            case 'B':
-            case 'C':
-                break;
-                // -------------------------------
+                    // Werden nicht behandelt --------
+                case 'B':
+                case 'C':
+                    break;
+                    // -------------------------------
 
-            case 'D':
-                betrag.remove(betrag.length() - 1, 2);
-                if (is_comma)
-                {
-                    counter--;
-                }
-                if (counter == -1)
-                {
-                    is_comma = false;
-                    counter = 0;
-                }
-                beschreibung = "Betrag: ";
-                beschreibung += betrag;
-                stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
-                break;
-
-            case '#':
-                is_comma = true;
-                betrag += '.';
-                beschreibung = "Betrag: ";
-                beschreibung += betrag;
-                stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
-                break;
-
-            default:             // Zahlen von 0-9 werden behandelt
-                if (counter < 2) // maximal 2 Nachkommastellen zulassen
-                {
-                    betrag += stateMaschine.hardware.keypadManager.get_key();
+                case 'D':
+                    betrag.remove(betrag.length() - 1, 2);
+                    if (is_comma) {
+                        counter--;
+                    }
+                    if (counter == -1) {
+                        is_comma = false;
+                        counter = 0;
+                    }
                     beschreibung = "Betrag: ";
                     beschreibung += betrag;
                     stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
-                }
-                else
-                {
                     break;
-                }
-                if (is_comma)
-                {
-                    counter++;
-                }
 
-                break;
+                case '#':
+                    is_comma = true;
+                    betrag += '.';
+                    beschreibung = "Betrag: ";
+                    beschreibung += betrag;
+                    stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
+                    break;
+
+                default:              // Zahlen von 0-9 werden behandelt
+                    if (counter < 2)  // maximal 2 Nachkommastellen zulassen
+                    {
+                        betrag += stateMaschine.hardware.keypadManager.get_key();
+                        beschreibung = "Betrag: ";
+                        beschreibung += betrag;
+                        stateMaschine.hardware.displayManager.set_new_text(beschreibung, true);
+                    } else {
+                        break;
+                    }
+                    if (is_comma) {
+                        counter++;
+                    }
+
+                    break;
             };
         }
 
-        if (!pause.alive() && finished)
-        {
+        if (!pause.alive() && finished) {
             stateMaschine.switch_state(next_state);
         }
     }
 
-private:
+   private:
     String beschreibung, betrag, id;
     StateIdentifier next_state;
     bool finished, is_comma;
