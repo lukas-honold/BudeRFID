@@ -32,6 +32,7 @@ public:
 
     void update()
     {
+        
         if (stateMaschine.hardware.cardReader.is_card_present())
         {
             stateMaschine.hardware.ledManager.blink(1, 3.f);
