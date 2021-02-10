@@ -18,7 +18,7 @@ public:
 
   bool pay(float money, String id)
   {
-    personen[person_index_by_id(id)].add_guthaben(money);
+    return personen[person_index_by_id(id)].add_guthaben(money);
   }
 
   float person_guthaben(String id)
