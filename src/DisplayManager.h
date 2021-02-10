@@ -41,10 +41,10 @@ public:
         cursor_line2.y = 0;
         cursor_line2.x = 0;
         cursor_line2.y = 1;
-        CustomCharGenerator gen;
-        for(int x=0;x<8;x++){
-            lcd.createChar(x, gen.new_chars[x]);
-        }
+        //CustomCharGenerator gen;
+        //for(int x=0;x<8;x++){
+        //    lcd.createChar(x, gen.new_chars[x]);
+        //}
     };
     void write_percentage_char(Cursor position,int percent){
         custom_char_cursor = position;

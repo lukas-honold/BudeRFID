@@ -26,9 +26,15 @@ public:
         state_id = StateIdentifier::WARTEN;
     };
 
+    void init()
+    {
+        //stateMaschine.hardware.displayManager.custom_char_gets_drawn = true;
+    }
+
     void update()
     {
-        
+        //stateMaschine.hardware.displayManager.write_percentage_char({0, 1}, stateMaschine.hardware.ct.percentage_left());
+
         if (stateMaschine.hardware.cardReader.is_card_present())
         {
             stateMaschine.hardware.ledManager.blink(1, 3.f);
@@ -36,6 +42,11 @@ public:
                 stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()));
             stateMaschine.switch_state(StateIdentifier::ID_GELESEN);
         }
+    }
+
+    void leave()
+    {
+        //stateMaschine.hardware.displayManager.custom_char_gets_drawn = false;
     }
 };
 
@@ -220,7 +231,7 @@ public:
                 if (counter < 2) // maximal 2 Nachkommastellen zulassen
                 {
                     betrag += stateMaschine.hardware.keypadManager.get_key();
-                    stateMaschine.hardware.displayManager.set_new_text(String("Betrag: "+betrag), true);
+                    stateMaschine.hardware.displayManager.set_new_text(String("Betrag: " + betrag), true);
                 }
                 else
                 {
