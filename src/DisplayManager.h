@@ -48,7 +48,7 @@ public:
     };
     void write_percentage_char(Cursor position,int percent){
         lcd.setCursor(position.x,position.y);
-        lcd.write(byte(int(map(percent,0,100,0,7)))); //map percentage to respective char
+        lcd.write(byte(map(percent,0,100,0,7))); //map percentage to respective char
     }
     ~DisplayManager() = default;
 
