@@ -2,8 +2,6 @@
 #pragma once
 
 struct Cursor {
-    Cursor(int m_x,int m_y):x(m_x),y(m_y){};
-    Cursor() = default;
     int x = 0;
     int y = 0;
 };
