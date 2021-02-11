@@ -6,7 +6,7 @@
 class DataManager {
    public:
     DataManager(int cs) {
-        init_SD(cs);
+        // init_SD(cs);
         import_data();
     };
 
