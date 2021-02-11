@@ -16,8 +16,8 @@
 
 #define led_pin 7
 
-
 void setup() {
+
     Serial.begin(9600);
     StateMaschine stm;
 
