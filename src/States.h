@@ -24,29 +24,47 @@ class Warten : public State {
         state_id = StateIdentifier::WARTEN;
     };
 
-    void init(){};
+    void init() {
+        paused = false;
+        pause = Countdown(1.f);
+    };
 
     void update() {
         new_time_left = int(stateMaschine.hardware.ct.getTimeLeft() / 1000);
-        Serial.println(new_time_left);
-        if (new_time_left != time_left) {
-            time_left = new_time_left;
-            standby_message = "Standby in: ";
-            standby_message += time_left;
-            stateMaschine.hardware.displayManager.set_new_text(standby_message, true);
+        if (!paused) {
+            if (new_time_left != time_left) {
+                time_left = new_time_left;
+                standby_message = "Standby in: ";
+                standby_message += time_left;
+                stateMaschine.hardware.displayManager.set_new_text(standby_message, true);
+            }
+            if (stateMaschine.hardware.cardReader.is_card_present() && !paused) {
+                stateMaschine.hardware.ledManager.blink(1, 1.5f);
+                person_text = stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id());
+                stateMaschine.hardware.displayManager.set_new_text(person_text);
+                stateMaschine.hardware.displayManager.set_new_text("", true);
+                if (person_text == "Falsche Karte") {
+                    stateMaschine.hardware.ledManager.blink(5, 0.2f);
+                    next_state = StateIdentifier::AUSGABE;
+                    paused = true;
+                    pause.set_new_time(3.f);
+                } else {
+                    stateMaschine.switch_state(StateIdentifier::ID_GELESEN);
+                }
+            }
         }
-        if (stateMaschine.hardware.cardReader.is_card_present()) {
-            stateMaschine.hardware.ledManager.blink(1, 3.f);
-            stateMaschine.hardware.displayManager.set_new_text(
-                stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()));
-            stateMaschine.hardware.displayManager.set_new_text("", true);
-            stateMaschine.switch_state(StateIdentifier::ID_GELESEN);
+
+        if (!pause.alive() && paused) {
+            stateMaschine.switch_state(next_state);
         }
     }
 
    private:
     int time_left, new_time_left;
-    String standby_message;
+    bool paused;
+    StateIdentifier next_state;
+    String standby_message, person_text;
+    Countdown pause;
 };
 
 class ID_Gelesen : public State {
@@ -59,6 +77,7 @@ class ID_Gelesen : public State {
         pause = Countdown(1.f);
         paused = false;
         payment_successful = false;
+        stateMaschine.hardware.ct.reset();
     };
 
     void update() {

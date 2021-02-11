@@ -24,7 +24,9 @@ class DataManager {
 
     String person_to_string(String id) {
         int index = person_index_by_id(id);
-
+        if(index == -1){
+            return "Falsche Karte";
+        }
         String data;
         data += personen[index].get_name();
         data += ": ";
