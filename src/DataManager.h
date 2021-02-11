@@ -19,11 +19,11 @@ class DataManager {
     }
 
     bool pay(float money, String id) {
-        return personen[person_index_by_id(id)].add_guthaben(money);
+        return personen[person_index_by_id(id)]->add_guthaben(money);
     }
 
     float person_guthaben(String id) {
-        return personen[person_index_by_id(id)].get_guthaben();
+        return personen[person_index_by_id(id)]->get_guthaben();
     }
 
     String person_to_string(String id) {
@@ -32,9 +32,9 @@ class DataManager {
             return "Falsche Karte";
         }
         String data;
-        data += personen[index].get_name();
+        data += personen[index]->get_name();
         data += ": ";
-        data += personen[index].get_guthaben();
+        data += personen[index]->get_guthaben();
         return data;
     };
 
@@ -111,9 +111,6 @@ class DataManager {
 
         // ----------------------------------------------
     };
-
-
-
    private:
     int person_index_by_id(String id) {
         int person_index;
