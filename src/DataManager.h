@@ -12,7 +12,11 @@ class DataManager {
         import_data();
     };
 
-    ~DataManager(){};
+    ~DataManager(){
+        for(int x =0;x<counter;x++){
+            delete personen[x];
+        }
+    }
 
     bool pay(float money, String id) {
         return personen[person_index_by_id(id)].add_guthaben(money);
@@ -86,21 +90,21 @@ class DataManager {
             end_index_subdaten = 0;
 
             // Initialisierung der Person
-            personen[i] = Person(name, id, guthaben);
+            personen[i] = new Person(name, id, guthaben);
 
             // Überprüfung des angelegten Objekts
-            Serial.println(personen[i].get_name());
-            Serial.println(personen[i].get_id());
-            Serial.println(personen[i].get_guthaben());
+            Serial.println(personen[i]->get_name());
+            Serial.println(personen[i]->get_id());
+            Serial.println(personen[i]->get_guthaben());
         }
     };
 
     void export_data() {
         String data = "";
         for (int i = 0; i < counter; i++) {
-            data += personen[i].get_name() + ",";
-            data += personen[i].get_id() + ",";
-            data += String(personen[i].get_guthaben()) + ";\n";
+            data += personen[i]->get_name() + ",";
+            data += personen[i]->get_id() + ",";
+            data += String(personen[i]->get_guthaben()) + ";\n";
         }
         Serial.println(data);  // Dummy export prüfen
                                // hier SD Karte beschreiben --------------------
@@ -108,19 +112,20 @@ class DataManager {
         // ----------------------------------------------
     };
 
+
+
    private:
     int person_index_by_id(String id) {
         int person_index;
         for (int i = 0; i < counter; i++) {
-            if (id == personen[i].get_id()) {
+            if (id == personen[i]->get_id()) {
                 person_index = i;
                 return person_index;
             }
         }
         return -1;
     };
-
     int counter = 0;
     String daten;
-    Person personen[10];
+    Person* personen[];
 };
