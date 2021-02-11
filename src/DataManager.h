@@ -1,18 +1,37 @@
 #pragma once
+#include <SD.h>
+#include <SPI.h>
+#include <Person.h>
+
 class DataManager {
    public:
     DataManager(int cs) {
-        //        Serial.print("Start");
-        //        if (!SD.begin(cs)) {
-        //            Serial.println("Card failed, or not present");
-        //            while (1) {};
-        //        } else {
-        //            Serial.println("card initialized.");
-        //        }
+        init_SD(cs);
         import_data();
     };
 
     ~DataManager(){};
+
+    // void dummy_payments(){
+    //     personen[0].add_guthaben(-2.f);
+    //     personen[1].add_guthaben(2.f);
+    // }
+
+    void init_SD(int chipSelect) {
+        while (!Serial) {
+            ;  // wait for serial port to connect. Needed for native USB port only
+        }
+        Serial.print("Initializing SD card...");
+
+        // see if the card is present and can be initialized:
+        if (!SD.begin(chipSelect)) {
+            Serial.println("Card failed, or not present");
+            // don't do anything more:
+            while (1)
+                ;
+        }
+        Serial.println("card initialized.");
+    }
 
     bool pay(float money, String id) {
         return personen[person_index_by_id(id)].add_guthaben(money);
@@ -24,7 +43,7 @@ class DataManager {
 
     String person_to_string(String id) {
         int index = person_index_by_id(id);
-        if(index == -1){
+        if (index == -1) {
             return "Falsche Karte";
         }
         String data;
@@ -35,26 +54,37 @@ class DataManager {
     };
 
     void import_data() {
-        //        File dataFile = SD.open("datalog.txt");
-        //        if (dataFile) {
-        //            counter = 0;
-        //            while (dataFile.available()) {
-        //                char x = (char) dataFile.read();
-        //                if (x == ';') {
-        //                    counter++;
-        //                }
-        //                daten += x;
-        //            }
-        //            dataFile.close();
-        //        } else {
-        //            Serial.println("Fuck");
-        //        }
+        // SD Kartenimplementierung -----------------------------------------------
+        // // open the file. note that only one file can be open at a time,
+        // // so you have to close this one before opening another.
+        // File dataFile = SD.open("datalog.txt");
+
+        // // if the file is available, write to it:
+        // String daten = "";
+        // counter = 0;
+
+        // if (dataFile) {
+        //     while (dataFile.available()) {
+        //         char x = (char)dataFile.read();
+        //         if (x == ';') {
+        //             counter++;
+        //         }
+        //         daten += x;
+        //     }
+        //     dataFile.close();
+        // }
+        // // if the file isn't open, pop up an error:
+        // else {
+        //     Serial.println("error opening datalog.txt");
+        // }
+
+        // Serial.println("Importierte Daten:");
+        // Serial.println(daten);
+        // Serial.println(counter);
+        // --------------------------------------------------------------------------
 
         daten = "Luedi,1864555133,10.0;\nKirsch,5775247193,20.0;";
         counter = 2;
-
-        //      Serial.println(daten);
-        //      Serial.println(counter);
 
         int start_index = 0;
         int end_index = 0;
@@ -89,6 +119,7 @@ class DataManager {
             personen[i] = Person(name, id, guthaben);
 
             // Überprüfung des angelegten Objekts
+            Serial.println("Angelegte Person:");
             Serial.println(personen[i].get_name());
             Serial.println(personen[i].get_id());
             Serial.println(personen[i].get_guthaben());
@@ -100,12 +131,20 @@ class DataManager {
         for (int i = 0; i < counter; i++) {
             data += personen[i].get_name() + ",";
             data += personen[i].get_id() + ",";
-            data += String(personen[i].get_guthaben()) + ";\n";
+            data += String(personen[i].get_guthaben()) +";";
+            if (i < counter - 1) {
+                data += "\n";
+            }
         }
-        Serial.println(data);  // Dummy export prüfen
-                               // hier SD Karte beschreiben --------------------
+        Serial.println("Exportierte Daten");
+        Serial.println(data); 
 
-        // ----------------------------------------------
+        // SD Kartenimplementierung -------------------------------
+        // SD.remove("datalog.txt");
+        // File dataFile = SD.open("datalog.txt", FILE_WRITE);
+        // dataFile.print(data);
+        // dataFile.close();
+        // --------------------------------------------------------
     };
 
    private:
@@ -120,7 +159,7 @@ class DataManager {
         return -1;
     };
 
-    int counter = 0;
+    int counter;
     String daten;
     Person personen[10];
 };

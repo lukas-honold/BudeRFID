@@ -178,6 +178,7 @@ class Aufladen : public State {
         beschreibung = "";
         finished = false;
         pause = Countdown(1.f);
+        stateMaschine.hardware.ct.reset();
     };
 
     void update() {
