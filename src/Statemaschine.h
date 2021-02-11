@@ -25,7 +25,7 @@ public:
 class StateMaschine
 {
 public:
-    StateMaschine() : hardware(20){};
+    StateMaschine() : hardware(30){};  // seconds of inactivity after which the device goes automatically into standby
 
     void run(State **array_of_possible_states, int nbr_states, StateIdentifier start_state)
     {
@@ -55,7 +55,6 @@ public:
                 break;
             }
         }
-        //wenn wir hier ankommen dann haben wir ein problem
     };
 
     StateIdentifier current_state;

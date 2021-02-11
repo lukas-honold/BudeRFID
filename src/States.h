@@ -7,6 +7,7 @@
 class ChipAuflegen : public State {
    public:
     ChipAuflegen(StateMaschine &stm) : State(stm) {
+        stateMaschine.hardware.ledManager.blink(1, 2.f);
         state_id = StateIdentifier::CHIP_AUFLEGEN;
     };
 
@@ -39,7 +40,7 @@ class Warten : public State {
                 stateMaschine.hardware.displayManager.set_new_text(standby_message, true);
             }
             if (stateMaschine.hardware.cardReader.is_card_present() && !paused) {
-                stateMaschine.hardware.ledManager.blink(1, 1.5f);
+                stateMaschine.hardware.ledManager.toggle_permanent(true);
                 person_text = stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id());
                 stateMaschine.hardware.displayManager.set_new_text(person_text);
                 stateMaschine.hardware.displayManager.set_new_text("", true);
@@ -82,11 +83,13 @@ class ID_Gelesen : public State {
 
     void update() {
         if (stateMaschine.hardware.keypadManager.is_pressed() && !paused) {
+            stateMaschine.hardware.ledManager.toggle_permanent(false);
             switch (stateMaschine.hardware.keypadManager.get_key()) {
                 case ('*'):
                     // Option Abbruch
                     set_text_and_pause("Abbruch", 1.f);
                     next_state = StateIdentifier::AUSGABE;
+                    stateMaschine.hardware.ledManager.blink(3, 0.2f);
                     break;
                 case 'A':
                     // Option Geld aufladen
@@ -99,8 +102,10 @@ class ID_Gelesen : public State {
                     payment_successful = stateMaschine.hardware.dataManager.pay(-1.f, stateMaschine.hardware.cardReader.get_id());
                     if (payment_successful) {
                         set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
+                        stateMaschine.hardware.ledManager.blink(1, 0.5f);
                     } else {
                         set_text_and_pause("Nicht genug Geld", 2.f);
+                        stateMaschine.hardware.ledManager.blink(5, 0.2f);
                     }
                     next_state = StateIdentifier::AUSGABE;
                     break;
@@ -109,8 +114,10 @@ class ID_Gelesen : public State {
                     payment_successful = stateMaschine.hardware.dataManager.pay(-0.5f, stateMaschine.hardware.cardReader.get_id());
                     if (payment_successful) {
                         set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
+                        stateMaschine.hardware.ledManager.blink(1, 0.5f);
                     } else {
                         set_text_and_pause("Nicht genug Geld", 2.f);
+                        stateMaschine.hardware.ledManager.blink(5, 0.2f);
                     }
                     next_state = StateIdentifier::AUSGABE;
                     break;
@@ -153,6 +160,7 @@ class Ausgabe : public State {
         stateMaschine.hardware.ct.reset();
         stateMaschine.hardware.displayManager.set_new_text("");
         stateMaschine.hardware.displayManager.set_new_text("", true);
+        stateMaschine.hardware.ledManager.toggle_permanent(false);
         stateMaschine.switch_state(StateIdentifier::CHIP_AUFLEGEN);
     }
 };
@@ -179,6 +187,7 @@ class Aufladen : public State {
                     // Option Abbruch
                     stateMaschine.hardware.displayManager.set_new_text("Abbruch");
                     stateMaschine.hardware.displayManager.set_new_text("", true);
+                    stateMaschine.hardware.ledManager.blink(3, 0.2f);
                     next_state = StateIdentifier::AUSGABE;
                     pause.set_new_time(1.f);
                     finished = true;
@@ -188,10 +197,9 @@ class Aufladen : public State {
                     // Option Bestätigen
                     id = stateMaschine.hardware.cardReader.get_id();
                     stateMaschine.hardware.dataManager.pay(betrag.toFloat(), id);
-                    // String person = stateMaschine.hardware.dataManager.person_to_string(id);
-                    // stateMaschine.hardware.displayManager.set_new_text(person);
                     stateMaschine.hardware.displayManager.set_new_text("Neues Guthaben:");
                     stateMaschine.hardware.displayManager.set_new_text(String(stateMaschine.hardware.dataManager.person_guthaben(id)), true);
+                    stateMaschine.hardware.ledManager.blink(1, 1.5f);
                     next_state = StateIdentifier::AUSGABE;
                     pause.set_new_time(3.f);
                     finished = true;
