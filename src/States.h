@@ -43,13 +43,15 @@ class Warten : public State {
                 stateMaschine.hardware.ledManager.toggle_permanent(true);
                 person_text = stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id());
                 stateMaschine.hardware.displayManager.set_new_text(person_text);
-                stateMaschine.hardware.displayManager.set_new_text("", true);
+
                 if (person_text == "Falsche Karte") {
                     stateMaschine.hardware.ledManager.blink(5, 0.2f);
+                    stateMaschine.hardware.displayManager.set_new_text(String("ID: " + stateMaschine.hardware.cardReader.get_id()), true);
                     next_state = StateIdentifier::AUSGABE;
                     paused = true;
-                    pause.set_new_time(3.f);
+                    pause.set_new_time(10.f);
                 } else {
+                    stateMaschine.hardware.displayManager.set_new_text("", true);
                     stateMaschine.switch_state(StateIdentifier::ID_GELESEN);
                 }
             }
@@ -123,7 +125,7 @@ class ID_Gelesen : public State {
                     break;
                 case 'D':
                     // Option Karten_ID anzeigen
-                    set_text_and_pause(stateMaschine.hardware.cardReader.get_id(), 10.f);
+                    set_text_and_pause(String("ID: " + stateMaschine.hardware.cardReader.get_id()), 10.f);
                     next_state = StateIdentifier::AUSGABE;
                     break;
                 default:
