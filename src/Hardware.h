@@ -10,10 +10,10 @@
 #include "PowerManager.h"
 
 #define relay_pin A3
-#define chip_select_rfid 5
-#define reset_rfid 4
-#define chip_select_sd 6
-#define led_pin 7
+#define chip_select_rfid 9
+#define reset_rfid 8
+#define chip_select_sd 10
+#define led_pin A0
 
 
 class Hardware

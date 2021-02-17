@@ -6,9 +6,9 @@ char keys[ROWS][COLS] = {{'1', '2', '3', 'A'},
                          {'4', '5', '6', 'B'},
                          {'7', '8', '9', 'C'},
                          {'*', '0', '#', 'D'}};
-byte rowPins[ROWS] = {3, 8, 9, 10};  // Row pinouts of the keypad
+byte rowPins[ROWS] = {7,6,5,4};  // Row pinouts of the keypad
 
-byte colPins[COLS] = {A0, A1, A2, 2};  // Column pinouts of the keypad
+byte colPins[COLS] = {3,3, A1, A2};  // Column pinouts of the keypad
 
 class KeypadManager {
    public:
