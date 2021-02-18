@@ -15,13 +15,13 @@
 #include "States.h"
 #include "Timer.h"
 
-Hardware hrdw(30);
-StateMaschine stm(hrdw);
+
 
 void setup() {
     Serial.begin(9600);
     SPI.begin();
-
+    Hardware hrdw(30);
+    StateMaschine stm(hrdw);
     State *states[] = {
         new ChipAuflegen(stm),
         new Warten(stm),
