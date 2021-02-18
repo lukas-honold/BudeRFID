@@ -25,7 +25,7 @@ public:
 class StateMaschine
 {
 public:
-    StateMaschine() : hardware(30){};  // seconds of inactivity after which the device goes automatically into standby
+    StateMaschine(Hardware& hrdw):hardware(hrdw) {};  // seconds of inactivity after which the device goes automatically into standby
 
     void run(State **array_of_possible_states, int nbr_states, StateIdentifier start_state)
     {
@@ -59,7 +59,7 @@ public:
 
     StateIdentifier current_state;
     State *current_state_running;
-    Hardware hardware;
+    Hardware& hardware;
     int m_nbr_states;
     State **dyn_array;
 
