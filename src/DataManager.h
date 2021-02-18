@@ -3,12 +3,13 @@
 #include <SPI.h>
 #include <Person.h>
 
-MFRC522 mfrc522(9, 8);  // Create MFRC522 instance
+#define DEGUG false
+
 
 class DataManager
 {
 public:
-    DataManager(int cs_sd, int i_framerate) : m_timer(i_framerate)
+    DataManager(int cs_sd, int i_framerate) : m_timer(i_framerate),mfrc522(9, 8)
     {
         init(cs_sd);
         import_data();
@@ -28,25 +29,28 @@ public:
         mfrc522.PCD_Init();                // Init MFRC522
         delay(4);                          // Optional delay. Some board do need more time after init to be ready, see Readme
         mfrc522.PCD_DumpVersionToSerial(); // Show details of PCD - MFRC522 Card Reader details
-        Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
+        if (DEGUG)
+            Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
         // Open serial communications and wait for port to open:
 
         while (!Serial)
         {
             ; // wait for serial port to connect. Needed for native USB port only
         }
-
-        Serial.print("Initializing SD card...");
+        if (DEGUG)
+            Serial.print("Initializing SD card...");
 
         // see if the card is present and can be initialized:
         if (!SD.begin(chipSelect_sd))
         {
-            Serial.println("Card failed, or not present");
+            if (DEGUG)
+                Serial.println("Card failed, or not present");
             // don't do anything more:
             while (1)
                 ;
         }
-        Serial.println("card initialized.");
+        if (DEGUG)
+            Serial.println("card initialized.");
 
         // open the file. note that only one file can be open at a time,
         // so you have to close this one before opening another.
@@ -64,7 +68,8 @@ public:
         // if the file isn't open, pop up an error:
         else
         {
-            Serial.println("error opening datalog.txt");
+            if (DEGUG)
+                Serial.println("error opening datalog.txt");
         }
     }
 
@@ -193,10 +198,13 @@ public:
             personen[i] = Person(name, id, guthaben);
 
             // Überprüfung des angelegten Objekts
-            Serial.println("Angelegte Person:");
-            Serial.println(personen[i].get_name());
-            Serial.println(personen[i].get_id());
-            Serial.println(personen[i].get_guthaben());
+            if (DEGUG){
+                Serial.println("Angelegte Person:");
+                Serial.println(personen[i].get_name());
+                Serial.println(personen[i].get_id());
+                Serial.println(personen[i].get_guthaben());
+            }
+
         }
     };
 
@@ -213,8 +221,11 @@ public:
                 data += "\n";
             }
         }
-        Serial.println("Exportierte Daten");
-        Serial.println(data);
+        if(DEGUG){
+            Serial.println("Exportierte Daten");
+            Serial.println(data);
+        }
+
 
         // SD Kartenimplementierung -------------------------------
         // SD.remove("datalog.txt");
@@ -238,12 +249,14 @@ private:
         }
         return -1;
     };
+    Timer m_timer;
+    MFRC522 mfrc522;  // Create MFRC522 instance
 
     int counter;
     String daten;
     Person personen[10];
 
-    Timer m_timer;
+
     String m_id;
     bool m_is_card_present = false;
 };

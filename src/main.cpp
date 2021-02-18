@@ -22,7 +22,7 @@ void setup() {
     SPI.begin();
     Hardware hrdw(30);
     StateMaschine stm(hrdw);
-    State *states[] = {
+    State *states[5] = {
         new ChipAuflegen(stm),
         new Warten(stm),
         new ID_Gelesen(stm),
