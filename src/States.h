@@ -39,14 +39,14 @@ class Warten : public State {
                 standby_message += time_left;
                 stateMaschine.hardware.displayManager.set_new_text(standby_message, true);
             }
-            if (stateMaschine.hardware.cardReader.is_card_present() && !paused) {
+            if (stateMaschine.hardware.dataManager.is_card_present() && !paused) {
                 stateMaschine.hardware.ledManager.toggle_permanent(true);
-                person_text = stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id());
+                person_text = stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.dataManager.get_id());
                 stateMaschine.hardware.displayManager.set_new_text(person_text);
 
                 if (person_text == "Falsche Karte") {
                     stateMaschine.hardware.ledManager.blink(5, 0.2f);
-                    stateMaschine.hardware.displayManager.set_new_text(String("ID: " + stateMaschine.hardware.cardReader.get_id()), true);
+                    stateMaschine.hardware.displayManager.set_new_text(String("ID: " + stateMaschine.hardware.dataManager.get_id()), true);
                     next_state = StateIdentifier::AUSGABE;
                     paused = true;
                     pause.set_new_time(10.f);
@@ -101,9 +101,9 @@ class ID_Gelesen : public State {
                     break;
                 case 'B':
                     // Option 1.00€ abbuchen
-                    payment_successful = stateMaschine.hardware.dataManager.pay(-1.f, stateMaschine.hardware.cardReader.get_id());
+                    payment_successful = stateMaschine.hardware.dataManager.pay(-1.f, stateMaschine.hardware.dataManager.get_id());
                     if (payment_successful) {
-                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 1.f);
+                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.dataManager.get_id()), 1.f);
                         //stateMaschine.hardware.ledManager.blink(1, 0.5f);
                     } else {
                         set_text_and_pause("Nicht genug Geld", 2.f);
@@ -113,9 +113,9 @@ class ID_Gelesen : public State {
                     break;
                 case 'C':
                     // Option 0.50€ abbuchen
-                    payment_successful = stateMaschine.hardware.dataManager.pay(-0.5f, stateMaschine.hardware.cardReader.get_id());
+                    payment_successful = stateMaschine.hardware.dataManager.pay(-0.5f, stateMaschine.hardware.dataManager.get_id());
                     if (payment_successful) {
-                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 1.f);
+                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.dataManager.get_id()), 1.f);
                         // stateMaschine.hardware.ledManager.blink(1, 0.5f);
                     } else {
                         set_text_and_pause("Nicht genug Geld", 2.f);
@@ -125,7 +125,7 @@ class ID_Gelesen : public State {
                     break;
                 case 'D':
                     // Option Karten_ID anzeigen
-                    set_text_and_pause(String("ID: " + stateMaschine.hardware.cardReader.get_id()), 10.f);
+                    set_text_and_pause(String("ID: " + stateMaschine.hardware.dataManager.get_id()), 10.f);
                     next_state = StateIdentifier::AUSGABE;
                     break;
                 default:
@@ -198,7 +198,7 @@ class Aufladen : public State {
 
                 case 'A':
                     // Option Bestätigen
-                    id = stateMaschine.hardware.cardReader.get_id();
+                    id = stateMaschine.hardware.dataManager.get_id();
                     stateMaschine.hardware.dataManager.pay(betrag.toFloat(), id);
                     stateMaschine.hardware.displayManager.set_new_text("Neues Guthaben:");
                     stateMaschine.hardware.displayManager.set_new_text(String(stateMaschine.hardware.dataManager.person_guthaben(id)), true);
