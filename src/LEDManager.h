@@ -50,7 +50,7 @@ public:
 private:
 
     void tgl(bool state){
-        digitalWrite(m_led_pin,state);
+        digitalWrite(m_led_pin, !state);
         current_state = state;
     }
 

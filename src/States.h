@@ -103,8 +103,8 @@ class ID_Gelesen : public State {
                     // Option 1.00€ abbuchen
                     payment_successful = stateMaschine.hardware.dataManager.pay(-1.f, stateMaschine.hardware.cardReader.get_id());
                     if (payment_successful) {
-                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
-                        stateMaschine.hardware.ledManager.blink(1, 0.5f);
+                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 1.f);
+                        //stateMaschine.hardware.ledManager.blink(1, 0.5f);
                     } else {
                         set_text_and_pause("Nicht genug Geld", 2.f);
                         stateMaschine.hardware.ledManager.blink(5, 0.2f);
@@ -115,8 +115,8 @@ class ID_Gelesen : public State {
                     // Option 0.50€ abbuchen
                     payment_successful = stateMaschine.hardware.dataManager.pay(-0.5f, stateMaschine.hardware.cardReader.get_id());
                     if (payment_successful) {
-                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 2.f);
-                        stateMaschine.hardware.ledManager.blink(1, 0.5f);
+                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.cardReader.get_id()), 1.f);
+                        // stateMaschine.hardware.ledManager.blink(1, 0.5f);
                     } else {
                         set_text_and_pause("Nicht genug Geld", 2.f);
                         stateMaschine.hardware.ledManager.blink(5, 0.2f);
