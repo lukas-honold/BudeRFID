@@ -8,7 +8,7 @@ const char keys[ROWS][COLS]  = {{'1', '2', '3', 'A'},
                          {'7', '8', '9', 'C'},
                          {'*', '0', '#', 'D'}};
 
- byte rowPins[ROWS]= {3,2,A1,A2};  // Row pinouts of the keypad
+ byte rowPins[ROWS]= {3,2,17,18};  // Row pinouts of the keypad
 
  byte colPins[COLS]  = {7,6,5,4};  // Column pinouts of the keypad
 

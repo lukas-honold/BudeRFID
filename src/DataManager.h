@@ -4,12 +4,13 @@
 #include <Person.h>
 
 #define DEGUG false
-
+#define chip_select_rfid 47
+#define reset_rfid 49
 
 class DataManager
 {
 public:
-    DataManager(int cs_sd, int i_framerate) : m_timer(i_framerate),mfrc522(9, 8)
+    DataManager(int cs_sd, int i_framerate) : m_timer(i_framerate), mfrc522(chip_select_rfid, reset_rfid)
     {
         init(cs_sd);
         import_data();
@@ -198,13 +199,13 @@ public:
             personen[i] = Person(name, id, guthaben);
 
             // Überprüfung des angelegten Objekts
-            if (DEGUG){
+            if (DEGUG)
+            {
                 Serial.println("Angelegte Person:");
                 Serial.println(personen[i].get_name());
                 Serial.println(personen[i].get_id());
                 Serial.println(personen[i].get_guthaben());
             }
-
         }
     };
 
@@ -221,11 +222,11 @@ public:
                 data += "\n";
             }
         }
-        if(DEGUG){
+        if (DEGUG)
+        {
             Serial.println("Exportierte Daten");
             Serial.println(data);
         }
-
 
         // SD Kartenimplementierung -------------------------------
         // SD.remove("datalog.txt");
@@ -250,12 +251,11 @@ private:
         return -1;
     };
     Timer m_timer;
-    MFRC522 mfrc522;  // Create MFRC522 instance
+    MFRC522 mfrc522; // Create MFRC522 instance
 
     int counter;
     String daten;
     Person personen[10];
-
 
     String m_id;
     bool m_is_card_present = false;

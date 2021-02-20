@@ -8,11 +8,9 @@
 #include "LEDManager.h"
 #include "PowerManager.h"
 
-#define relay_pin A3
-#define chip_select_rfid 9
-#define reset_rfid 8
-#define chip_select_sd 10
-#define led_pin A0
+#define relay_pin 19
+#define chip_select_sd 53
+#define led_pin 8
 
 class Hardware
 {
