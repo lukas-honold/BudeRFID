@@ -3,7 +3,7 @@
 #include <SPI.h>
 #include <Person.h>
 
-#define DEGUG false
+#define DEGUG true
 #define chip_select_rfid 47
 #define reset_rfid 49
 
@@ -18,10 +18,6 @@ public:
 
     ~DataManager(){};
 
-    // void dummy_payments(){
-    //     personen[0].add_guthaben(-2.f);
-    //     personen[1].add_guthaben(2.f);
-    // }
 
     void init(int chipSelect_sd)
     {
@@ -134,36 +130,38 @@ public:
     void import_data()
     {
         // SD Kartenimplementierung -----------------------------------------------
-        // // open the file. note that only one file can be open at a time,
-        // // so you have to close this one before opening another.
-        // File dataFile = SD.open("datalog.txt");
+        // open the file. note that only one file can be open at a time,
+        // so you have to close this one before opening another.
+        File dataFile = SD.open("datalog.txt");
 
-        // // if the file is available, write to it:
-        // String daten = "";
-        // counter = 0;
+        // if the file is available, write to it:
+        String daten = "";
+        counter = 0;
 
-        // if (dataFile) {
-        //     while (dataFile.available()) {
-        //         char x = (char)dataFile.read();
-        //         if (x == ';') {
-        //             counter++;
-        //         }
-        //         daten += x;
-        //     }
-        //     dataFile.close();
-        // }
-        // // if the file isn't open, pop up an error:
-        // else {
-        //     Serial.println("error opening datalog.txt");
-        // }
+        if (dataFile)
+        {
+            while (dataFile.available())
+            {
+                char x = (char)dataFile.read();
+                if (x == ';')
+                {
+                    counter++;
+                }
+                daten += x;
+            }
+            dataFile.close();
+        }
+        // if the file isn't open, pop up an error:
+        else
+        {
+            Serial.println("error opening datalog.txt");
+        }
 
-        // Serial.println("Importierte Daten:");
-        // Serial.println(daten);
-        // Serial.println(counter);
+        Serial.println("Importierte Daten:");
+        Serial.println(daten);
+        Serial.println(counter);
         // --------------------------------------------------------------------------
 
-        daten = "Luedi,1864555133,10.0;\nKirsch,5775247193,20.0;";
-        counter = 2;
 
         int start_index = 0;
         int end_index = 0;
@@ -222,18 +220,19 @@ public:
                 data += "\n";
             }
         }
+
+        // SD Kartenimplementierung -------------------------------
+        SD.remove("datalog.txt");
+        File dataFile = SD.open("datalog.txt", FILE_WRITE);
+        dataFile.print(data);
+        dataFile.close();
+        // --------------------------------------------------------
+
         if (DEGUG)
         {
             Serial.println("Exportierte Daten");
             Serial.println(data);
         }
-
-        // SD Kartenimplementierung -------------------------------
-        // SD.remove("datalog.txt");
-        // File dataFile = SD.open("datalog.txt", FILE_WRITE);
-        // dataFile.print(data);
-        // dataFile.close();
-        // --------------------------------------------------------
     };
 
 private:
