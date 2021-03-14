@@ -95,34 +95,28 @@ class ID_Gelesen : public State {
                     break;
                 case 'A':
                     // Option Geld aufladen
-                    stateMaschine.hardware.displayManager.set_new_text("Aufladen:");
+                    stateMaschine.hardware.displayManager.set_new_text("Aufladen/Zahlen:");
                     stateMaschine.hardware.displayManager.set_new_text("Betrag:", true);
                     next_state = StateIdentifier::AUFLADEN;
                     break;
+                
+                // Wird nicht behandelt ----------
                 case 'B':
+                    break;
+                // -------------------------------
+
+                case 'C':
                     // Option 1.00€ abbuchen
                     payment_successful = stateMaschine.hardware.dataManager.pay(-1.f, stateMaschine.hardware.dataManager.get_id());
                     if (payment_successful) {
                         set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.dataManager.get_id()), 1.f);
-                        //stateMaschine.hardware.ledManager.blink(1, 0.5f);
                     } else {
                         set_text_and_pause("Nicht genug Geld", 2.f);
                         stateMaschine.hardware.ledManager.blink(5, 0.2f);
                     }
                     next_state = StateIdentifier::AUSGABE;
                     break;
-                case 'C':
-                    // Option 0.50€ abbuchen
-                    payment_successful = stateMaschine.hardware.dataManager.pay(-0.5f, stateMaschine.hardware.dataManager.get_id());
-                    if (payment_successful) {
-                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(stateMaschine.hardware.dataManager.get_id()), 1.f);
-                        // stateMaschine.hardware.ledManager.blink(1, 0.5f);
-                    } else {
-                        set_text_and_pause("Nicht genug Geld", 2.f);
-                        stateMaschine.hardware.ledManager.blink(5, 0.2f);
-                    }
-                    next_state = StateIdentifier::AUSGABE;
-                    break;
+
                 case 'D':
                     // Option Karten_ID anzeigen
                     set_text_and_pause(String("ID: " + stateMaschine.hardware.dataManager.get_id()), 10.f);
@@ -148,23 +142,6 @@ class ID_Gelesen : public State {
     StateIdentifier next_state;
     bool paused, payment_successful;
     Countdown pause;
-};
-
-class Ausgabe : public State {
-   public:
-    Ausgabe(StateMaschine &stm) : State(stm) {
-        state_id = StateIdentifier::AUSGABE;
-    }
-
-    void init(){};
-
-    void update() {
-        stateMaschine.hardware.ct.reset();
-        stateMaschine.hardware.displayManager.set_new_text("");
-        stateMaschine.hardware.displayManager.set_new_text("", true);
-        stateMaschine.hardware.ledManager.toggle_permanent(false);
-        stateMaschine.switch_state(StateIdentifier::CHIP_AUFLEGEN);
-    }
 };
 
 class Aufladen : public State {
@@ -197,7 +174,7 @@ class Aufladen : public State {
                     break;
 
                 case 'A':
-                    // Option Bestätigen
+                    // Aufladen bestätigen
                     id = stateMaschine.hardware.dataManager.get_id();
                     stateMaschine.hardware.dataManager.pay(betrag.toFloat(), id);
                     stateMaschine.hardware.displayManager.set_new_text("Neues Guthaben:");
@@ -208,11 +185,25 @@ class Aufladen : public State {
                     finished = true;
                     break;
 
-                    // Werden nicht behandelt --------
+
                 case 'B':
+                    // Bezahlen bestätigen
+                    id = stateMaschine.hardware.dataManager.get_id();
+                    payment_successful = stateMaschine.hardware.dataManager.pay((-1.f)*betrag.toFloat(), id);
+                    if (payment_successful) {
+                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(id), 1.f);
+                    } else {
+                        set_text_and_pause("Nicht genug Geld", 2.f);
+                        stateMaschine.hardware.displayManager.set_new_text("", true);
+                        stateMaschine.hardware.ledManager.blink(5, 0.2f);
+                    }
+                    next_state = StateIdentifier::AUSGABE;
+                    break;
+
+                // Wird nicht behandelt --------
                 case 'C':
                     break;
-                    // -------------------------------
+                // -----------------------------
 
                 case 'D':
                     betrag.remove(betrag.length() - 1, 2);
@@ -229,6 +220,9 @@ class Aufladen : public State {
                     break;
 
                 case '#':
+                    if(is_comma){
+                        break;
+                    }
                     is_comma = true;
                     betrag += '.';
                     beschreibung = "Betrag: ";
@@ -260,9 +254,32 @@ class Aufladen : public State {
     }
 
    private:
+    void set_text_and_pause(String text, float pause_time) {
+        stateMaschine.hardware.displayManager.set_new_text(text);
+        pause.set_new_time(pause_time);
+    };
+
     String beschreibung, betrag, id;
     StateIdentifier next_state;
-    bool finished, is_comma;
+    bool finished, is_comma, payment_successful;;
     int counter;
     Countdown pause;
 };
+
+class Ausgabe : public State {
+   public:
+    Ausgabe(StateMaschine &stm) : State(stm) {
+        state_id = StateIdentifier::AUSGABE;
+    }
+
+    void init(){};
+
+    void update() {
+        stateMaschine.hardware.ct.reset();
+        stateMaschine.hardware.displayManager.set_new_text("");
+        stateMaschine.hardware.displayManager.set_new_text("", true);
+        stateMaschine.hardware.ledManager.toggle_permanent(false);
+        stateMaschine.switch_state(StateIdentifier::CHIP_AUFLEGEN);
+    }
+};
+
