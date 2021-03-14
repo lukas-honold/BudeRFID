@@ -1,6 +1,6 @@
-<mxfile host="65bd71144e" modified="2021-02-12T14:06:45.027Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.53.2 Chrome/87.0.4280.141 Electron/11.2.1 Safari/537.36" etag="tzxPai4XIwe_zgeqS1k3" version="14.2.4" type="embed">
+<mxfile>
     <diagram id="Vek_govyJM7gMfjglIwv" name="Page-1">
-        <mxGraphModel dx="1367" dy="940" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1028" dy="319" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -35,7 +35,7 @@
                         <mxPoint x="91.55" y="-11" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="61" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="2" target="42">
+                <mxCell id="61" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="2" target="42" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="372" y="273"/>
@@ -43,7 +43,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="62" value="wrong_id()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="61">
+                <mxCell id="62" value="wrong_id()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="61" vertex="1" connectable="0">
                     <mxGeometry x="0.173" y="1" relative="1" as="geometry">
                         <mxPoint x="2" y="9" as="offset"/>
                     </mxGeometry>
@@ -151,7 +151,7 @@
                 <mxCell id="10" value="AUFLADEN" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="406" y="523" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="41" value="key_*_pressed()&lt;br&gt;key_A_pressed()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="1" vertex="1" connectable="0">
+                <mxCell id="41" value="key_*_pressed()&lt;br&gt;key_A_pressed()&lt;br&gt;key_B_pressed()" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="1" vertex="1" connectable="0">
                     <mxGeometry x="323.00000000000006" y="553" as="geometry"/>
                 </mxCell>
                 <mxCell id="44" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="42" target="2" edge="1">
