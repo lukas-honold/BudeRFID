@@ -93,17 +93,15 @@ class ID_Gelesen : public State {
                     next_state = StateIdentifier::AUSGABE;
                     stateMaschine.hardware.ledManager.blink(3, 0.2f);
                     break;
+
+                    // Option Geld aufladen oder abbuchen ---------
                 case 'A':
-                    // Option Geld aufladen
+                case 'B':
                     stateMaschine.hardware.displayManager.set_new_text("Aufladen/Zahlen:");
                     stateMaschine.hardware.displayManager.set_new_text("Betrag:", true);
                     next_state = StateIdentifier::AUFLADEN;
                     break;
-                
-                // Wird nicht behandelt ----------
-                case 'B':
-                    break;
-                // -------------------------------
+                    // --------------------------------------------
 
                 case 'C':
                     // Option 1.00€ abbuchen
@@ -191,13 +189,17 @@ class Aufladen : public State {
                     id = stateMaschine.hardware.dataManager.get_id();
                     payment_successful = stateMaschine.hardware.dataManager.pay((-1.f)*betrag.toFloat(), id);
                     if (payment_successful) {
-                        set_text_and_pause(stateMaschine.hardware.dataManager.person_to_string(id), 1.f);
+                        stateMaschine.hardware.displayManager.set_new_text("Neues Guthaben:");
+                        stateMaschine.hardware.displayManager.set_new_text(String(stateMaschine.hardware.dataManager.person_guthaben(id)), true);
+                        stateMaschine.hardware.ledManager.blink(1, 1.5f);
+                        pause.set_new_time(3.f);
                     } else {
                         set_text_and_pause("Nicht genug Geld", 2.f);
                         stateMaschine.hardware.displayManager.set_new_text("", true);
                         stateMaschine.hardware.ledManager.blink(5, 0.2f);
                     }
                     next_state = StateIdentifier::AUSGABE;
+                    finished = true;
                     break;
 
                 // Wird nicht behandelt --------
