@@ -112,7 +112,7 @@ public:
         return personen[person_index_by_id(id)].get_guthaben();
     }
 
-    float total_guthaben()
+    float total_guthaben() // Gesamtguthaben aller Personen
     {
         float total = 0.f;
         for (int i = 0; i < counter; i++)
