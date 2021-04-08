@@ -4,8 +4,7 @@ Small payment system for the arduino mega embedded system. Beautiful structured 
 Easily extensible for further use.
 ## **Features**
     Object Oriented Statemaschine
-    RFID Scanner 
-    Self switch off 
-
-
-
+    RFID Scanner
+    Self switch off
+    
+![](https://github.com/lukas-honold/BudeRFID/blob/master/doc/device.jpeg)
