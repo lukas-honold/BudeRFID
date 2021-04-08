@@ -254,7 +254,7 @@ private:
 
     int counter;
     String daten;
-    Person personen[10];
+    Person personen[30];
 
     String m_id;
     bool m_is_card_present = false;
