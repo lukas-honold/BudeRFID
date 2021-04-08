@@ -18,7 +18,6 @@ public:
 
     ~DataManager(){};
 
-
     void init(int chipSelect_sd)
     {
         Serial.begin(9600);
@@ -113,6 +112,16 @@ public:
         return personen[person_index_by_id(id)].get_guthaben();
     }
 
+    float total_guthaben()
+    {
+        float total = 0.f;
+        for (int i = 0; i < counter; i++)
+        {
+            total += personen[i].get_guthaben();
+        }
+        return total;
+    }
+
     String person_to_string(String id)
     {
         int index = person_index_by_id(id);
@@ -161,7 +170,6 @@ public:
         Serial.println(daten);
         Serial.println(counter);
         // --------------------------------------------------------------------------
-
 
         int start_index = 0;
         int end_index = 0;
